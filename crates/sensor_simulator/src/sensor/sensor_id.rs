@@ -23,10 +23,22 @@ impl SensorId {
     }
 }
 
+impl From<Uuid> for SensorId {
+    fn from(value: Uuid) -> Self {
+        SensorId {
+            value: value.to_string(),
+        }
+    }
+}
+
 impl FromStr for SensorId {
     type Err = SensorIdError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        todo!()
+        let uuid = Uuid::from_str(s);
+        match uuid {
+            Ok(u) => Ok(SensorId::from(u)),
+            Err(_) => return Err(SensorIdError::InvalidFormat),
+        }
     }
 }

@@ -8,7 +8,7 @@ pub struct Latitude {
 }
 
 impl Latitude {
-    pub fn new(area: Area) -> Latitude {
+    pub fn new(area: &Area) -> Latitude {
         let mut rng = rand::thread_rng();
 
         let v = match area {

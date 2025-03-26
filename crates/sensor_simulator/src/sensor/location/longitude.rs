@@ -8,7 +8,7 @@ pub struct Longitude {
 }
 
 impl Longitude {
-    pub fn new(area: Area) -> Longitude {
+    pub fn new(area: &Area) -> Longitude {
         let mut rng = rand::thread_rng();
 
         let x = match area {
@@ -20,5 +20,9 @@ impl Longitude {
         };
 
         Longitude { value: x }
+    }
+
+    pub fn value(&self) -> f64 {
+        self.value
     }
 }

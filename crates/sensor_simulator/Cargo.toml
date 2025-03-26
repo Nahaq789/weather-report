@@ -7,3 +7,4 @@ edition = "2021"
 uuid = { workspace = true }
 thiserror = { workspace = true }
 rand = { workspace = true }
+chrono = { workspace = true }

@@ -3,6 +3,8 @@ use sensor_id::SensorId;
 use status::Status;
 
 pub mod location;
+pub mod measurements;
+pub mod season;
 pub mod sensor_id;
 pub mod status;
 

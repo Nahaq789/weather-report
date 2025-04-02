@@ -1,6 +1,9 @@
 use rand::Rng;
 
-use crate::sensor::{location::area::Area, season::Season};
+use crate::{
+    generate_anomalies,
+    sensor::{location::area::Area, season::Season},
+};
 
 #[derive(Debug)]
 pub struct Humidity {
@@ -38,6 +41,8 @@ impl Humidity {
         };
 
         let value = rng.gen_range(base_range.0..=base_range.1);
-        Humidity { value: value }
+
+        let final_value = generate_anomalies(value);
+        Humidity { value: final_value }
     }
 }

@@ -1,6 +1,9 @@
 use rand::Rng;
 
-use crate::sensor::{location::area::Area, season::Season};
+use crate::{
+    generate_anomalies,
+    sensor::{location::area::Area, season::Season},
+};
 
 #[derive(Debug)]
 pub struct Temperature {
@@ -39,21 +42,7 @@ impl Temperature {
 
         let value = rng.gen_range(base_range.0..=base_range.1);
 
-        // noise
-        let noise = rng.gen_range(0.95..=1.05);
-        let value_with_noise = value * noise;
-
-        // Generation of anomalies
-        let final_value = if rng.gen_bool(0.05) {
-            let anomaly_factor = if rng.gen_bool(0.5) {
-                rng.gen_range(1.15..=1.2)
-            } else {
-                rng.gen_range(0.8..=0.85)
-            };
-            value_with_noise * anomaly_factor
-        } else {
-            value_with_noise
-        };
+        let final_value = generate_anomalies(value);
 
         Temperature { value: final_value }
     }

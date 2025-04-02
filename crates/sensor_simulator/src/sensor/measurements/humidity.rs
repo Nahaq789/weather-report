@@ -42,7 +42,7 @@ impl Humidity {
 
         let value = rng.gen_range(base_range.0..=base_range.1);
 
-        let final_value = generate_anomalies(value);
+        let final_value = generate_anomalies(value, &mut rng);
         Humidity { value: final_value }
     }
 }

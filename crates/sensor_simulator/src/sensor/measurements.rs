@@ -30,4 +30,15 @@ impl Measurements {
     pub fn humidity(&self) -> &Humidity {
         &self.humidity
     }
+
+    pub fn has_severe_anomaly(&self) -> bool {
+        self.temperature.value() < -60.0
+            || self.temperature.value() > 60.0
+            || self.humidity.value() < 0.0
+            || self.humidity.value() > 100.0
+    }
+
+    pub fn has_minor_anomaly(&self) -> bool {
+        self.temperature.value() < -45.0 || self.temperature.value() > 45.0
+    }
 }

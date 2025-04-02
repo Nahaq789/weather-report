@@ -17,3 +17,16 @@ pub struct Sensor {
     measurements: Measurements,
     status: Status,
 }
+
+impl Sensor {
+    fn determine_status(&self) -> Status {
+        if self.measurements.has_severe_anomaly() {
+            return Status::Error;
+        }
+
+        if self.measurements.has_minor_anomaly() {
+            return Status::Warning;
+        }
+        Status::Normal
+    }
+}

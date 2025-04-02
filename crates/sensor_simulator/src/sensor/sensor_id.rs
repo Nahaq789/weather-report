@@ -3,6 +3,8 @@ use std::str::FromStr;
 use thiserror::Error;
 use uuid::Uuid;
 
+use super::location::area::Area;
+
 #[derive(Debug, PartialEq, Eq)]
 pub struct SensorId {
     value: String,
@@ -15,10 +17,10 @@ pub enum SensorIdError {
 }
 
 impl SensorId {
-    pub fn new() -> SensorId {
+    pub fn new(area: &Area) -> SensorId {
         let id = Uuid::new_v4();
         SensorId {
-            value: id.to_string(),
+            value: format!("{}_{}", area.to_string(), id),
         }
     }
 }

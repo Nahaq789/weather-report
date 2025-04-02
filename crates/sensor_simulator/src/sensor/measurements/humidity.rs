@@ -11,7 +11,7 @@ pub struct Humidity {
 }
 
 impl Humidity {
-    pub fn new(season: Season, area: Area) -> Humidity {
+    pub fn new(season: &Season, area: &Area) -> Humidity {
         let mut rng = rand::thread_rng();
         let base_range = match (season, area) {
             (Season::Spring, Area::Tokyo) => (50.0, 65.0),
@@ -44,5 +44,9 @@ impl Humidity {
 
         let final_value = generate_anomalies(value, &mut rng);
         Humidity { value: final_value }
+    }
+
+    pub fn value(&self) -> f64 {
+        self.value
     }
 }

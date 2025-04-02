@@ -11,7 +11,7 @@ pub struct Temperature {
 }
 
 impl Temperature {
-    pub fn new(season: Season, area: Area) -> Temperature {
+    pub fn new(season: &Season, area: &Area) -> Temperature {
         let mut rng = rand::thread_rng();
         let base_range = match (area, season) {
             (Area::Tokyo, Season::Spring) => (10.0, 22.0),

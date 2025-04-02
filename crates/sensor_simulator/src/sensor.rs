@@ -1,4 +1,5 @@
 use location::Location;
+use measurements::Measurements;
 use sensor_id::SensorId;
 use status::Status;
 
@@ -13,6 +14,6 @@ pub struct Sensor {
     sensor_id: SensorId,
     location: Location,
     time_stamp: chrono::Utc,
-    measurements: String,
+    measurements: Measurements,
     status: Status,
 }

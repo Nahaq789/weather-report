@@ -8,25 +8,25 @@ pub mod longitude;
 
 #[derive(Debug)]
 pub struct Location {
-    name: Area,
+    area: Area,
     latitude: Latitude,
     longitude: Longitude,
 }
 
 impl Location {
-    pub fn new(name: Area) -> Location {
-        let latitude = Latitude::new(&name);
-        let longitude = Longitude::new(&name);
+    pub fn new(area: Area) -> Location {
+        let latitude = Latitude::new(&area);
+        let longitude = Longitude::new(&area);
 
         Location {
-            name,
+            area,
             latitude,
             longitude,
         }
     }
 
-    pub fn name(&self) -> &Area {
-        &self.name
+    pub fn area(&self) -> &Area {
+        &self.area
     }
 
     pub fn latitude(&self) -> &Latitude {

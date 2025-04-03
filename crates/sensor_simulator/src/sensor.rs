@@ -1,3 +1,4 @@
+use chrono::DateTime;
 use location::Location;
 use measurements::Measurements;
 use sensor_id::SensorId;
@@ -15,31 +16,30 @@ pub mod status;
 pub struct Sensor {
     sensor_id: SensorId,
     location: Location,
-    time_stamp: chrono::Utc,
+    time_stamp: DateTime<chrono::Utc>,
     measurements: Measurements,
     status: Status,
 }
 
 impl Sensor {
     pub fn new(area: &Area, season: &Season) -> Sensor {
-        // let sensor_id = SensorId::new(area);
-        // let measurements = Measurements::new(area, season);
-        // let time_stamp = chrono::Utc::now();
-        // let
+        let measurements = Measurements::new(area, season);
+        let status = Self::determine_status(&measurements);
+
         Sensor{
             sensor_id: SensorId::new(area),
-            measurements: Measurements::new(area, season),
+            location: Location::new(area.clone()),
             time_stamp: chrono::Utc::now(),
-            location: Location::new(area),
-
+            measurements,
+            status
         }
     }
-    fn determine_status(&self) -> Status {
-        if self.measurements.has_severe_anomaly() {
+    fn determine_status(measurements: &Measurements) -> Status {
+        if measurements.has_severe_anomaly() {
             return Status::Error;
         }
 
-        if self.measurements.has_minor_anomaly() {
+        if measurements.has_minor_anomaly() {
             return Status::Warning;
         }
         Status::Normal

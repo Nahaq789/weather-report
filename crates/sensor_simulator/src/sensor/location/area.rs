@@ -2,7 +2,7 @@ use std::{fmt::Display, str::FromStr};
 
 use thiserror::Error;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Area {
     Tokyo,
     Osaka,

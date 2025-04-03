@@ -25,3 +25,20 @@ pub fn generate_anomalies(value: f64, rng: &mut ThreadRng) -> f64 {
 
     final_value
 }
+
+pub fn generate_rand_value_u8(rng: &mut ThreadRng) -> u8 {
+    rng.gen_range(1..=10)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_generate_rand_value_u8() {
+        let mut rng = rand::thread_rng();
+
+        let actual = generate_rand_value_u8(&mut rng);
+        assert!(actual >= 1 && 10 >= actual)
+    }
+}

@@ -9,5 +9,4 @@ fn main() {
     let season = Season::Spring;
     let sensor = Sensor::new(&area, &season);
     println!("{:?}", sensor);
-    println!("Hello, world!");
 }

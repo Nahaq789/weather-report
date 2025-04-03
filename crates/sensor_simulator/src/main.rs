@@ -1,8 +1,4 @@
-use sensor_simulator::sensor::{
-    location::area::Area,
-    season::{self, Season},
-    Sensor,
-};
+use sensor_simulator::sensor::{location::area::Area, season::Season, Sensor};
 
 fn main() {
     let area = Area::Tokyo;

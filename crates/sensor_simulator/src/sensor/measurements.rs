@@ -1,4 +1,5 @@
 use humidity::Humidity;
+use serde::Serialize;
 use temperature::Temperature;
 
 use super::{location::area::Area, season::Season};
@@ -6,7 +7,7 @@ use super::{location::area::Area, season::Season};
 pub mod humidity;
 pub mod temperature;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Measurements {
     temperature: Temperature,
     humidity: Humidity,

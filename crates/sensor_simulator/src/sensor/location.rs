@@ -1,12 +1,13 @@
 use area::Area;
 use latitude::Latitude;
 use longitude::Longitude;
+use serde::Serialize;
 
 pub mod area;
 pub mod latitude;
 pub mod longitude;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Location {
     area: Area,
     latitude: Latitude,

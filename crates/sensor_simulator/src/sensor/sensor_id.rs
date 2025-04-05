@@ -1,11 +1,12 @@
 use std::str::FromStr;
 
+use serde::Serialize;
 use thiserror::Error;
 use uuid::Uuid;
 
 use super::location::area::Area;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Serialize)]
 pub struct SensorId {
     value: String,
 }

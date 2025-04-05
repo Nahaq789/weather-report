@@ -1,8 +1,9 @@
 use rand::Rng;
+use serde::Serialize;
 
 use super::area::Area;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Latitude {
     value: f64,
 }

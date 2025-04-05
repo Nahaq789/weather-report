@@ -1,10 +1,11 @@
+use crate::sensor::location::area::Area;
+use crate::sensor::season::Season;
 use chrono::DateTime;
 use location::Location;
 use measurements::Measurements;
 use sensor_id::SensorId;
+use serde::Serialize;
 use status::Status;
-use crate::sensor::location::area::Area;
-use crate::sensor::season::Season;
 
 pub mod location;
 pub mod measurements;
@@ -12,7 +13,7 @@ pub mod season;
 pub mod sensor_id;
 pub mod status;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Sensor {
     sensor_id: SensorId,
     location: Location,
@@ -26,12 +27,12 @@ impl Sensor {
         let measurements = Measurements::new(area, season);
         let status = Self::determine_status(&measurements);
 
-        Sensor{
+        Sensor {
             sensor_id: SensorId::new(area),
             location: Location::new(area.clone()),
             time_stamp: chrono::Utc::now(),
             measurements,
-            status
+            status,
         }
     }
     fn determine_status(measurements: &Measurements) -> Status {

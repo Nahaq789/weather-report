@@ -16,3 +16,5 @@ chrono = { version = "0.4.38", features = ["serde"] }
 thiserror = "1.0.65"
 rand = "0.8"
 rdkafka  = "0.37.0"
+futures = "0.3"
+env_logger = "0.10"

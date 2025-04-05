@@ -9,7 +9,9 @@ uuid = { workspace = true }
 thiserror = { workspace = true }
 rand = { workspace = true }
 chrono = { workspace = true }
-rdkafka = { workspace = true }
+rdkafka = { workspace = true } 
 anyhow = { workspace = true }
 serde = { workspace = true } 
 serde_json = { workspace = true }
+futures = { workspace = true }
+env_logger = { workspace = true }

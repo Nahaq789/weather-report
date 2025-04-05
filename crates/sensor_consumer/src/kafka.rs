@@ -10,11 +10,13 @@ pub fn build_consumer() -> Result<StreamConsumer, KafkaError> {
         .set("bootstrap.servers", "localhost:9094")
         .set("enable.partition.eof", "false")
         .set("auto.offset.reset", "earliest")
-        .set("session.timeout.ms", "6000")
+        .set("session.timeout.ms", "30000")
+        .set("max.poll.interval.ms", "300000")
+        .set("message.timeout.ms", "10000")
         .set("heartbeat.interval.ms", "2000")
+        .set("socket.timeout.ms", "60000")
         .set("fetch.min.bytes", "1")
         .set("fetch.wait.max.ms", "100")
-        .set("socket.timeout.ms", "10000")
         .set("group.id", "sensor_group_1")
         .create::<StreamConsumer>()
 }
@@ -43,7 +45,9 @@ pub fn receive_messages<'a>(
                         }
                     }
 
-                    consumer.commit_message(&m, CommitMode::Async)?
+                    if let Err(e) = consumer.commit_message(&m, CommitMode::Async) {
+                        println!("Failed to commit offset: {:?}", e);
+                    }
                 }
                 Err(e) => println!("Failed to recive message: {:?}", e),
             };

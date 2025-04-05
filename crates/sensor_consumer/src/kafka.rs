@@ -48,6 +48,9 @@ pub fn receive_messages<'a>(
 
                     tokio::spawn(async move {
                         println!("process the msg: {}", &tailored);
+
+                        // TODO
+                        // save tailored data to db
                         tokio::time::sleep(Duration::from_millis(10_000)).await;
                     });
                 }

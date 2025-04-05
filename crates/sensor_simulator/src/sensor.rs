@@ -17,7 +17,7 @@ pub mod status;
 pub struct Sensor {
     sensor_id: SensorId,
     location: Location,
-    time_stamp: DateTime<chrono::Utc>,
+    time_stamp: DateTime<chrono::Local>,
     measurements: Measurements,
     status: Status,
 }
@@ -30,7 +30,7 @@ impl Sensor {
         Sensor {
             sensor_id: SensorId::new(area),
             location: Location::new(area.clone()),
-            time_stamp: chrono::Utc::now(),
+            time_stamp: chrono::Local::now(),
             measurements,
             status,
         }

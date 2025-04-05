@@ -1,17 +1,17 @@
 use rdkafka::{
+    error::KafkaError,
     producer::{FutureProducer, FutureRecord},
     util::Timeout,
     ClientConfig,
 };
 
-use crate::sensor::{self, Sensor};
+use crate::sensor::Sensor;
 
-pub fn build_producer() -> FutureProducer {
+pub fn build_producer() -> Result<FutureProducer, KafkaError> {
     ClientConfig::new()
         .set("bootstrap.servers", "localhost:9094")
         .set("message.timeout.ms", "5000")
-        .create()
-        .expect("Producer creation error")
+        .create::<FutureProducer>()
 }
 
 pub fn send_message<'a>(

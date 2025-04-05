@@ -19,22 +19,9 @@ async fn main() -> anyhow::Result<()> {
                 }
 
                 println!("stating receive messages");
-                let task = tokio::spawn(async move {
-                    if let Err(e) = receive_messages(&consumer).await {
-                        println!("failed to receive task: {:?}", e);
-                    }
-                    anyhow::Ok(())
-                });
 
-                match task.await {
-                    Ok(result) => {
-                        if let Err(_) = result {
-                            println!("panic consumer task");
-                        }
-                    }
-                    Err(e) => {
-                        println!("failed to task: {:?}", e)
-                    }
+                if let Err(e) = receive_messages(&consumer).await {
+                    println!("failed to receive: {:?}", e);
                 }
 
                 tokio::time::sleep(Duration::from_secs(5)).await;

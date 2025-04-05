@@ -1,12 +1,10 @@
-use rdkafka::{
-    consumer::{CommitMode, Consumer, StreamConsumer},
-    error::KafkaError,
-    message::Headers,
-    ClientConfig, Message,
-};
+use std::{sync::Arc, time::Duration};
 
-pub fn build_consumer() -> Result<StreamConsumer, KafkaError> {
-    ClientConfig::new()
+use futures::StreamExt;
+use rdkafka::{consumer::StreamConsumer, message::Headers, ClientConfig, Message};
+
+pub fn build_consumer() -> anyhow::Result<Arc<StreamConsumer>> {
+    let consumer = ClientConfig::new()
         .set("bootstrap.servers", "localhost:9094")
         .set("enable.partition.eof", "false")
         .set("auto.offset.reset", "earliest")
@@ -18,39 +16,46 @@ pub fn build_consumer() -> Result<StreamConsumer, KafkaError> {
         .set("fetch.min.bytes", "1")
         .set("fetch.wait.max.ms", "100")
         .set("group.id", "sensor_group_1")
-        .create::<StreamConsumer>()
+        .create::<StreamConsumer>()?;
+    Ok(Arc::new(consumer))
 }
 
 pub fn receive_messages<'a>(
-    consumer: &'a StreamConsumer,
+    consumer: &'a Arc<StreamConsumer>,
 ) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + '_>> {
     Box::pin(async move {
-        loop {
-            match consumer.recv().await {
+        let mut message_stream = consumer.stream();
+        while let Some(message) = message_stream.next().await {
+            match message {
                 Ok(m) => {
-                    let payload = match m.payload_view::<str>() {
-                        None => "",
-                        Some(Ok(s)) => s,
-                        Some(Err(e)) => {
-                            println!("Failed while deserializing message payload: {:?}", e);
-                            ""
+                    let tailored = match m.payload_view::<str>() {
+                        Some(Ok(payload)) => {
+                            if let Some(headers) = m.headers() {
+                                for header in headers.iter() {
+                                    println!("Header: {:?}: {:?}", header.key, header.value)
+                                }
+                            }
+                            format!(
+                                "payload: {}, len: {}, offset: {}",
+                                payload,
+                                payload.len(),
+                                m.offset()
+                            )
                         }
+                        Some(Err(_)) => "Message payload is not string".to_owned(),
+                        None => "No payload".to_owned(),
                     };
-                    println!("key: '{:?}', payload: '{}', topic: {}, partition: {}, offset: {}, timestamp: {:?}",
-                      m.key(), payload, m.topic(), m.partition(), m.offset(), m.timestamp());
 
-                    if let Some(headers) = m.headers() {
-                        for header in headers.iter() {
-                            println!("Header {:#?}: {:?}", header.key, header.value);
-                        }
-                    }
-
-                    if let Err(e) = consumer.commit_message(&m, CommitMode::Async) {
-                        println!("Failed to commit offset: {:?}", e);
-                    }
+                    tokio::spawn(async move {
+                        println!("process the msg: {}", &tailored);
+                        tokio::time::sleep(Duration::from_millis(10_000)).await;
+                    });
                 }
-                Err(e) => println!("Failed to recive message: {:?}", e),
-            };
+                Err(e) => {
+                    eprintln!("Failed to receving message: {:?}", e)
+                }
+            }
         }
+        Ok(())
     })
 }

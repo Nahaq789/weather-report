@@ -7,7 +7,7 @@ use sensor_simulator::{
 async fn main() -> anyhow::Result<()> {
     let producer = build_producer()?;
     let mut tasks = Vec::new();
-    for i in 0..1000 {
+    for i in 0..100000 {
         let producer_clone = producer.clone();
         let task = tokio::spawn(async move {
             let area = Area::Tokyo;

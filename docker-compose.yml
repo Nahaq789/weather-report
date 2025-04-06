@@ -3,6 +3,7 @@ services:
     image: "bitnami/kafka:latest"
     ports:
       - "9094:9094" #1
+    container_name: kafka
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_CONTROLLER_BROKER_ID=0
@@ -17,6 +18,7 @@ services:
     image: "provectuslabs/kafka-ui:latest"
     ports:
       - "8080:8080"
+    container_name: kafka-ui
     depends_on:
       - kafka
     environment:
@@ -35,4 +37,4 @@ services:
     container_name: cassandra
     restart: always
     volumes:
-      - cassandra:/var/lib/cassandra
+      - ./out:/var/lib/cassandra

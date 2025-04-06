@@ -1,8 +1,8 @@
 services:
   kafka:
-    image: 'bitnami/kafka:latest'
+    image: "bitnami/kafka:latest"
     ports:
-      - '9094:9094' #1
+      - "9094:9094" #1
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_CONTROLLER_BROKER_ID=0
@@ -14,11 +14,25 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
 
   kafka-ui:
-    image: 'provectuslabs/kafka-ui:latest'
+    image: "provectuslabs/kafka-ui:latest"
     ports:
-      - '8080:8080'
+      - "8080:8080"
     depends_on:
       - kafka
     environment:
       - KAFKA_CLUSTERS_0_NAME=local #5
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 #6
+
+  cassandra:
+    image: "cassandra:latest"
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_USER=user
+      - CASSANDRA_PASSWORD=password
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=128M
+    container_name: cassandra
+    restart: always
+    volumes:
+      - cassandra:/var/lib/cassandra

@@ -3,6 +3,7 @@ use std::time::Duration;
 use kafka::{build_consumer, receive_messages};
 use rdkafka::consumer::Consumer;
 
+pub mod cassandra;
 pub mod kafka;
 
 #[tokio::main]

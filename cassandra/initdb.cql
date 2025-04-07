@@ -1,6 +1,6 @@
-DROP KEYSPCACE IF EXISTS sensor_key_space;
+DROP KEYSPACE IF EXISTS sensor_key_space;
 
-CREATE KEYSPCACE sensor_key_space WITH REPLICATION {
+CREATE KEYSPACE sensor_key_space WITH REPLICATION {
   'class' : 'SimpleStrategy',
   'replication_factor' : 1
 };

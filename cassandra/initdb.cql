@@ -1,9 +1,11 @@
 DROP KEYSPACE IF EXISTS sensor_key_space;
 
-CREATE KEYSPACE sensor_key_space WITH REPLICATION {
+CREATE KEYSPACE sensor_key_space WITH REPLICATION = {
   'class' : 'SimpleStrategy',
   'replication_factor' : 1
 };
+
+USE sensor_key_space;
 
 CREATE TABLE sensor (
   id text PRIMARY KEY,

@@ -28,27 +28,28 @@ pub fn receive_messages<'a>(
         while let Some(message) = message_stream.next().await {
             match message {
                 Ok(m) => {
-                    let tailored = match m.payload_view::<str>() {
+                    let _tailored = match m.payload_view::<str>() {
                         Some(Ok(payload)) => {
                             if let Some(headers) = m.headers() {
                                 for header in headers.iter() {
                                     println!("Header: {:?}: {:?}", header.key, header.value)
                                 }
                             }
-                            format!(
+                            println!(
                                 "payload: {}, len: {}, offset: {}",
                                 payload,
                                 payload.len(),
                                 m.offset()
-                            )
+                            );
+                            payload.to_string()
                         }
                         Some(Err(_)) => "Message payload is not string".to_owned(),
                         None => "No payload".to_owned(),
                     };
 
                     tokio::spawn(async move {
-                        println!("process the msg: {}", &tailored);
-
+                        // println!("process the msg: {}", &tailored);
+                        //
                         // TODO
                         // save tailored data to db
                         tokio::time::sleep(Duration::from_millis(10_000)).await;

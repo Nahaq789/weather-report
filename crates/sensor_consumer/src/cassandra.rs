@@ -20,11 +20,15 @@ pub fn save_sensor<'a>(
     session: &'a Session,
     data: &'a str,
 ) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + 'a>> {
+    println!("start save");
     Box::pin(async move {
+        println!("start serde");
         let sensor = Sensor::from_str(data)?;
 
         let query = "INSERT INTO sensor_key_space.sensor (sensor_id, time_stamp, area, latitude, longitude, temperature, humidity, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+
         let mut statement = Statement::new(query, 8);
+        println!("start statement");
         map_err(
             statement.bind(0, sensor.sensor_id.as_str()),
             "Failed to bind sensor_id",
@@ -57,7 +61,8 @@ pub fn save_sensor<'a>(
             statement.bind(7, sensor.status.as_str()),
             "Failed to bind status",
         )?;
-        map_err(session.execute(&statement).await, "Failed to execute quest")?;
+        let result = session.execute(&statement).await;
+        map_err(result, "Failed to execute query")?;
         Ok(())
     })
 }

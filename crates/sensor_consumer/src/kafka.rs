@@ -3,6 +3,8 @@ use std::{sync::Arc, time::Duration};
 use futures::StreamExt;
 use rdkafka::{consumer::StreamConsumer, message::Headers, ClientConfig, Message};
 
+use crate::cassandra::{connect_cluster, save_sensor};
+
 pub fn build_consumer() -> anyhow::Result<Arc<StreamConsumer>> {
     let consumer = ClientConfig::new()
         .set("bootstrap.servers", "localhost:9094")
@@ -28,7 +30,7 @@ pub fn receive_messages<'a>(
         while let Some(message) = message_stream.next().await {
             match message {
                 Ok(m) => {
-                    let _tailored = match m.payload_view::<str>() {
+                    let tailored = match m.payload_view::<str>() {
                         Some(Ok(payload)) => {
                             if let Some(headers) = m.headers() {
                                 for header in headers.iter() {
@@ -52,7 +54,15 @@ pub fn receive_messages<'a>(
                         //
                         // TODO
                         // save tailored data to db
-                        tokio::time::sleep(Duration::from_millis(10_000)).await;
+                        match connect_cluster().await {
+                            Ok(session) => {
+                                println!("start cassandra");
+                                let _ = save_sensor(&session, &tailored).await;
+                                anyhow::Ok(())
+                            }
+                            Err(e) => Err(anyhow::anyhow!("{}", e.to_string())),
+                        }
+                        // tokio::time::sleep(Duration::from_millis(10_000)).await;
                     });
                 }
                 Err(e) => {

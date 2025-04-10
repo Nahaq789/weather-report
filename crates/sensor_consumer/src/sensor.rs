@@ -1,4 +1,6 @@
-#[derive(Debug)]
+use serde::Deserialize;
+
+#[derive(Debug, Deserialize)]
 pub struct Sensor {
     pub sensor_id: String,
     pub time_stamp: chrono::DateTime<chrono::Utc>,
@@ -31,5 +33,10 @@ impl Sensor {
             humidity,
             status,
         }
+    }
+
+    pub fn from_str(data: &str) -> anyhow::Result<Sensor> {
+        let s: Sensor = serde_json::from_str(data)?;
+        Ok(s)
     }
 }

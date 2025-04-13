@@ -38,3 +38,12 @@ services:
     restart: always
     volumes:
       - ./out:/var/lib/cassandra
+  dynamodb:
+    container_name: dynamodb
+    image: amazon/dynamodb-local:latest
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./dynamodb_data/:/data
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-dbPath", "/data"]   

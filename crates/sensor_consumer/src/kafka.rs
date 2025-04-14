@@ -31,7 +31,7 @@ pub fn receive_messages<'a>(
         while let Some(message) = message_stream.next().await {
             match message {
                 Ok(m) => {
-                    let tailored = match m.payload_view::<str>() {
+                    let _tailored = match m.payload_view::<str>() {
                         Some(Ok(payload)) => {
                             if let Some(headers) = m.headers() {
                                 for header in headers.iter() {

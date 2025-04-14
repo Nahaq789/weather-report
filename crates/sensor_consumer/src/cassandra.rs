@@ -1,6 +1,7 @@
 #[cfg(feature = "with_cassandra")]
 use cassandra_cpp::{BindRustType, Cluster, Session, Statement};
 
+#[cfg(feature = "with_cassandra")]
 use crate::sensor::Sensor;
 
 #[cfg(feature = "with_cassandra")]
@@ -70,6 +71,7 @@ pub fn save_sensor<'a>(
     })
 }
 
+#[cfg(feature = "with_cassandra")]
 fn map_err<T, E>(result: Result<T, E>, msg: &str) -> anyhow::Result<T>
 where
     E: std::fmt::Display,

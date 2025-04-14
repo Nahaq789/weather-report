@@ -71,3 +71,4 @@ terraform.rc
 .terraform.lock.hcl
 
 out/
+docker/

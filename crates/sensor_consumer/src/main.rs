@@ -4,6 +4,7 @@ use kafka::{build_consumer, receive_messages};
 use rdkafka::consumer::Consumer;
 
 pub mod cassandra;
+pub mod dynamodb;
 pub mod kafka;
 pub mod sensor;
 

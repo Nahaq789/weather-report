@@ -3,6 +3,7 @@ use std::{sync::Arc, time::Duration};
 use futures::StreamExt;
 use rdkafka::{consumer::StreamConsumer, message::Headers, ClientConfig, Message};
 
+#[cfg(feature = "with_cassandra")]
 use crate::cassandra::{connect_cluster, save_sensor};
 
 pub fn build_consumer() -> anyhow::Result<Arc<StreamConsumer>> {
@@ -24,7 +25,7 @@ pub fn build_consumer() -> anyhow::Result<Arc<StreamConsumer>> {
 
 pub fn receive_messages<'a>(
     consumer: &'a Arc<StreamConsumer>,
-) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + '_>> {
+) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + 'a>> {
     Box::pin(async move {
         let mut message_stream = consumer.stream();
         while let Some(message) = message_stream.next().await {
@@ -54,6 +55,7 @@ pub fn receive_messages<'a>(
                         //
                         // TODO
                         // save tailored data to db
+                        #[cfg(feature = "with_cassandra")]
                         match connect_cluster().await {
                             Ok(session) => {
                                 println!("start cassandra");
@@ -62,11 +64,11 @@ pub fn receive_messages<'a>(
                             }
                             Err(e) => Err(anyhow::anyhow!("{}", e.to_string())),
                         }
-                        // tokio::time::sleep(Duration::from_millis(10_000)).await;
+                        tokio::time::sleep(Duration::from_millis(10_000)).await;
                     });
                 }
                 Err(e) => {
-                    eprintln!("Failed to receving message: {:?}", e)
+                    eprintln!("Failed to receiving message: {:?}", e)
                 }
             }
         }

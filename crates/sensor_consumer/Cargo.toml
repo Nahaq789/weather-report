@@ -3,6 +3,10 @@ name = "sensor_consumer"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = []  
+with_cassandra = ["cassandra-cpp"]
+
 [dependencies]
 tokio = { workspace = true }
 uuid = { workspace = true }
@@ -15,4 +19,4 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 futures = { workspace = true }
 env_logger = { workspace = true }
-cassandra-cpp = { workspace = true }
+cassandra-cpp = { workspace = true, optional = true }

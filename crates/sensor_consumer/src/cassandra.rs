@@ -1,7 +1,9 @@
+#[cfg(feature = "with_cassandra")]
 use cassandra_cpp::{BindRustType, Cluster, Session, Statement};
 
 use crate::sensor::Sensor;
 
+#[cfg(feature = "with_cassandra")]
 pub fn connect_cluster() -> std::pin::Pin<
     Box<dyn std::future::Future<Output = Result<Session, cassandra_cpp::Error>> + Send>,
 > {
@@ -16,6 +18,7 @@ pub fn connect_cluster() -> std::pin::Pin<
     Box::pin(async move { cluster.connect_async().await })
 }
 
+#[cfg(feature = "with_cassandra")]
 pub fn save_sensor<'a>(
     session: &'a Session,
     data: &'a str,

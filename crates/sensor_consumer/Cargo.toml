@@ -20,3 +20,6 @@ serde_json = { workspace = true }
 futures = { workspace = true }
 env_logger = { workspace = true }
 cassandra-cpp = { workspace = true, optional = true }
+
+aws-config = { workspace = true }
+aws-sdk-dynamodb = { workspace = true }

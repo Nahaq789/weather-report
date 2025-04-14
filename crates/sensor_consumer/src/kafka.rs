@@ -5,6 +5,7 @@ use rdkafka::{consumer::StreamConsumer, message::Headers, ClientConfig, Message}
 
 #[cfg(feature = "with_cassandra")]
 use crate::cassandra::{connect_cluster, save_sensor};
+use crate::dynamodb::build_client;
 
 pub fn build_consumer() -> anyhow::Result<Arc<StreamConsumer>> {
     let consumer = ClientConfig::new()
@@ -28,10 +29,11 @@ pub fn receive_messages<'a>(
 ) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + 'a>> {
     Box::pin(async move {
         let mut message_stream = consumer.stream();
+        let client = Arc::new(build_client().await?);
         while let Some(message) = message_stream.next().await {
             match message {
                 Ok(m) => {
-                    let _tailored = match m.payload_view::<str>() {
+                    let tailored = match m.payload_view::<str>() {
                         Some(Ok(payload)) => {
                             if let Some(headers) = m.headers() {
                                 for header in headers.iter() {
@@ -49,12 +51,11 @@ pub fn receive_messages<'a>(
                         Some(Err(_)) => "Message payload is not string".to_owned(),
                         None => "No payload".to_owned(),
                     };
-
+                    let client_clone = Arc::clone(&client);
                     tokio::spawn(async move {
-                        // println!("process the msg: {}", &tailored);
-                        //
-                        // TODO
-                        // save tailored data to db
+                        println!("process the msg: {}", &tailored);
+                        println!("{:?}", client_clone);
+
                         #[cfg(feature = "with_cassandra")]
                         match connect_cluster().await {
                             Ok(session) => {

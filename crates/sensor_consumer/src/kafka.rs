@@ -51,10 +51,10 @@ pub fn receive_messages<'a>(
                         Some(Err(_)) => "Message payload is not string".to_owned(),
                         None => "No payload".to_owned(),
                     };
-                    let client_clone = Arc::clone(&client);
+                    let _client_clone = Arc::clone(&client);
                     tokio::spawn(async move {
                         println!("process the msg: {}", &tailored);
-                        println!("{:?}", client_clone);
+                        // println!("{:?}", client_clone);
 
                         #[cfg(feature = "with_cassandra")]
                         match connect_cluster().await {

@@ -17,7 +17,7 @@ pub fn build_producer() -> Result<FutureProducer, KafkaError> {
 pub fn send_message<'a>(
     producer: &'a FutureProducer,
     message: Sensor,
-) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + '_>> {
+) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + 'a>> {
     Box::pin(async move {
         let serde = serde_json::to_string(&message)
             .map_err(|e| anyhow::anyhow!("Failed to serialize sensor: {}", e))?;

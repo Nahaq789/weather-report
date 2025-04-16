@@ -2,6 +2,7 @@ use std::{sync::Arc, time::Duration};
 
 use futures::StreamExt;
 use rdkafka::{consumer::StreamConsumer, message::Headers, ClientConfig, Message};
+use sensor::sensor::Sensor;
 
 #[cfg(feature = "with_cassandra")]
 use crate::cassandra::{connect_cluster, save_sensor};
@@ -53,14 +54,16 @@ pub fn receive_messages<'a>(
                     };
                     let client_clone = client.clone();
                     tokio::spawn(async move {
-                        println!("process the msg: {}", &tailored);
-                        // println!("{:?}", client_clone);
+                        // println!("process the msg: {}", &tailored);
 
                         match Sensor::from_str(&tailored) {
-                            Ok(sensor) => match insert_data(&client_clone, sensor).await {
-                                Ok(_) => (),
-                                Err(e) => println!("{:?}", e.to_string()),
-                            },
+                            Ok(s) => {
+                                println!("{:?}", s);
+                                match insert_data(&client_clone, s).await {
+                                    Ok(_) => (),
+                                    Err(e) => println!("{:?}", e.to_string()),
+                                }
+                            }
                             Err(e) => println!("serde error: {:?}", e.to_string()),
                         }
 

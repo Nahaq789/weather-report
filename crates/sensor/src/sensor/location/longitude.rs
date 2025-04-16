@@ -1,11 +1,11 @@
 use std::fmt;
 
 use rand::Rng;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::area::Area;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Longitude {
     value: f64,
 }

@@ -3,9 +3,9 @@ use std::{
     str::{self},
 };
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Eq, Serialize)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Status {
     Normal,
     Warning,

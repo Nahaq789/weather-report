@@ -1,14 +1,14 @@
 use std::fmt;
 
 use rand::Rng;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     generate_anomalies,
     sensor::{location::area::Area, season::Season},
 };
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Humidity {
     value: f64,
 }

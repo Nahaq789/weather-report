@@ -4,7 +4,7 @@ use chrono::DateTime;
 use location::Location;
 use measurements::Measurements;
 use sensor_id::SensorId;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use status::Status;
 
 pub mod location;
@@ -13,7 +13,7 @@ pub mod season;
 pub mod sensor_id;
 pub mod status;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Sensor {
     sensor_id: SensorId,
     location: Location,
@@ -64,5 +64,9 @@ impl Sensor {
 
     pub fn status(&self) -> &Status {
         &self.status
+    }
+
+    pub fn from_str(s: &str) -> Result<Sensor, serde_json::Error> {
+        serde_json::from_str(s)
     }
 }

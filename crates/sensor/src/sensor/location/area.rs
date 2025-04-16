@@ -1,9 +1,9 @@
 use std::{fmt::Display, str::FromStr};
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-#[derive(Debug, PartialEq, Eq, Clone, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]
 pub enum Area {
     Tokyo,
     Osaka,

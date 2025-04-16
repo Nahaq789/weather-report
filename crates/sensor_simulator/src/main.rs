@@ -1,7 +1,5 @@
-use sensor_simulator::{
-    kafka::producer::{build_producer, send_message},
-    sensor::{location::area::Area, season::Season, Sensor},
-};
+use sensor::sensor::{location::area, season, Sensor};
+use sensor_simulator::kafka::producer::{build_producer, send_message};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -10,8 +8,8 @@ async fn main() -> anyhow::Result<()> {
     for i in 0..100 {
         let producer_clone = producer.clone();
         let task = tokio::spawn(async move {
-            let area = Area::Tokyo;
-            let season = Season::Spring;
+            let area = area::Area::Tokyo;
+            let season = season::Season::Spring;
             let sensor = Sensor::new(&area, &season);
 
             if i % 1000 == 0 {

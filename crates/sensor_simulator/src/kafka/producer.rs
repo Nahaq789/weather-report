@@ -4,8 +4,7 @@ use rdkafka::{
     util::Timeout,
     ClientConfig,
 };
-
-use crate::sensor::Sensor;
+use sensor::sensor;
 
 pub fn build_producer() -> Result<FutureProducer, KafkaError> {
     ClientConfig::new()
@@ -16,7 +15,7 @@ pub fn build_producer() -> Result<FutureProducer, KafkaError> {
 
 pub fn send_message<'a>(
     producer: &'a FutureProducer,
-    message: Sensor,
+    message: sensor::Sensor,
 ) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + 'a>> {
     Box::pin(async move {
         let serde = serde_json::to_string(&message)

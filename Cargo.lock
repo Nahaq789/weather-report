@@ -2090,6 +2090,7 @@ dependencies = [
  "chrono",
  "rand",
  "rdkafka",
+ "sensor",
  "serde",
  "serde_json",
  "thiserror",

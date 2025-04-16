@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = [ "crates/sensor_consumer",
+members = [ "crates/sensor", "crates/sensor_consumer",
   "crates/sensor_simulator"
 ]
 

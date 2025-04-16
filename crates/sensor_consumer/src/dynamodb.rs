@@ -1,6 +1,5 @@
 use aws_sdk_dynamodb::{types::AttributeValue, Client};
-
-use crate::sensor::Sensor;
+use sensor::sensor::Sensor;
 
 const TABLE_NAME: &'static str = "sensor_data";
 
@@ -35,14 +34,14 @@ pub fn insert_data<'a>(
     sensor: Sensor,
 ) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + 'a>> {
     Box::pin(async move {
-        let sensor_id = AttributeValue::S(sensor.sensor_id);
-        let time_stamp = AttributeValue::S(sensor.time_stamp.to_string());
-        let area = AttributeValue::S(sensor.area);
-        let latitude = AttributeValue::S(sensor.latitude.to_string());
-        let longitude = AttributeValue::S(sensor.longitude.to_string());
-        let temperature = AttributeValue::S(sensor.temperature.to_string());
-        let humidity = AttributeValue::S(sensor.humidity.to_string());
-        let status = AttributeValue::S(sensor.status);
+        let sensor_id = AttributeValue::S(sensor.sensor_id().to_string());
+        let time_stamp = AttributeValue::S(sensor.time_stamp().to_string());
+        let area = AttributeValue::S(sensor.location().area().to_string());
+        let latitude = AttributeValue::S(sensor.location().latitude().to_string());
+        let longitude = AttributeValue::S(sensor.location().longitude().to_string());
+        let temperature = AttributeValue::S(sensor.measurements().temperature().to_string());
+        let humidity = AttributeValue::S(sensor.measurements().humidity().to_string());
+        let status = AttributeValue::S(sensor.status().to_string());
 
         let request = client
             .put_item()

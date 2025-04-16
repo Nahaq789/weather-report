@@ -1,3 +1,5 @@
+use std::fmt;
+
 use rand::Rng;
 use serde::Serialize;
 
@@ -49,5 +51,11 @@ impl Humidity {
 
     pub fn value(&self) -> f64 {
         self.value
+    }
+}
+
+impl fmt::Display for Humidity {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.value)
     }
 }

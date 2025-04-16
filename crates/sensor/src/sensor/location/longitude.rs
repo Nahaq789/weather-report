@@ -1,3 +1,5 @@
+use std::fmt;
+
 use rand::Rng;
 use serde::Serialize;
 
@@ -25,5 +27,11 @@ impl Longitude {
 
     pub fn value(&self) -> f64 {
         self.value
+    }
+}
+
+impl fmt::Display for Longitude {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.value)
     }
 }

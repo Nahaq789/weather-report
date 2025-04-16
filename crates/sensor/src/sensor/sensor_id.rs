@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{fmt, str::FromStr};
 
 use serde::Serialize;
 use thiserror::Error;
@@ -43,5 +43,11 @@ impl FromStr for SensorId {
             Ok(u) => Ok(SensorId::from(u)),
             Err(_) => return Err(SensorIdError::InvalidFormat),
         }
+    }
+}
+
+impl fmt::Display for SensorId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.value)
     }
 }

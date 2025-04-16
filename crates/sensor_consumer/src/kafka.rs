@@ -5,10 +5,7 @@ use rdkafka::{consumer::StreamConsumer, message::Headers, ClientConfig, Message}
 
 #[cfg(feature = "with_cassandra")]
 use crate::cassandra::{connect_cluster, save_sensor};
-use crate::{
-    dynamodb::{build_client, insert_data},
-    sensor::Sensor,
-};
+use crate::dynamodb::{build_client, insert_data};
 
 pub fn build_consumer() -> anyhow::Result<Arc<StreamConsumer>> {
     let consumer = ClientConfig::new()

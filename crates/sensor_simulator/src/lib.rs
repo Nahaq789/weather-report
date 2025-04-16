@@ -1,7 +1,6 @@
 use rand::{rngs::ThreadRng, Rng};
 
 pub mod kafka;
-pub mod sensor;
 
 // generate noise
 fn noise(value: f64, rng: &mut ThreadRng) -> f64 {

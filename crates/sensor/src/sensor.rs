@@ -45,4 +45,24 @@ impl Sensor {
         }
         Status::Normal
     }
+
+    pub fn sensor_id(&self) -> &SensorId {
+        &self.sensor_id
+    }
+
+    pub fn location(&self) -> &Location {
+        &self.location
+    }
+
+    pub fn time_stamp(&self) -> &DateTime<chrono::Local> {
+        &self.time_stamp
+    }
+
+    pub fn measurements(&self) -> &Measurements {
+        &self.measurements
+    }
+
+    pub fn status(&self) -> &Status {
+        &self.status
+    }
 }

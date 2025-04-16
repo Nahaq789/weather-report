@@ -6,7 +6,6 @@ use rdkafka::consumer::Consumer;
 pub mod cassandra;
 pub mod dynamodb;
 pub mod kafka;
-pub mod sensor;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

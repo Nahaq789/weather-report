@@ -23,3 +23,5 @@ cassandra-cpp = { workspace = true, optional = true }
 
 aws-config = { workspace = true }
 aws-sdk-dynamodb = { workspace = true }
+
+sensor = { path = "../sensor"}

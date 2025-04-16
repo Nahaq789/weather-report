@@ -1,3 +1,5 @@
+use std::fmt;
+
 use rand::Rng;
 use serde::Serialize;
 
@@ -50,5 +52,11 @@ impl Temperature {
 
     pub fn value(&self) -> f64 {
         self.value
+    }
+}
+
+impl fmt::Display for Temperature {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.value)
     }
 }

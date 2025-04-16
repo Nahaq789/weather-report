@@ -1,3 +1,5 @@
+use core::fmt;
+
 use rand::Rng;
 use serde::Serialize;
 
@@ -25,5 +27,11 @@ impl Latitude {
 
     pub fn value(&self) -> f64 {
         self.value
+    }
+}
+
+impl fmt::Display for Latitude {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.value)
     }
 }

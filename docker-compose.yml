@@ -48,9 +48,7 @@ services:
     volumes:
       - ./docker/dynamodb:/data
     command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-dbPath", "/data"]   
-    networks:
-      - dynamodb-network
-  
+      
   dynamodb-admin:
     image: aaronshaf/dynamodb-admin
     ports:
@@ -58,10 +56,4 @@ services:
     environment:
       - DYNAMO_ENDPOINT=http://dynamodb:8000
     depends_on:
-      - dynamodb  
-    networks:
-      - dynamodb-network
-
-networks:
-  dynamodb-network:
-    driver: bridge
+      - dynamodb 

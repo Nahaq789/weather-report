@@ -1,4 +1,4 @@
-use std::{sync::Arc, time::Duration};
+use std::sync::Arc;
 
 use futures::StreamExt;
 use rdkafka::{consumer::StreamConsumer, message::Headers, ClientConfig, Message};
@@ -41,12 +41,6 @@ pub fn receive_messages<'a>(
                                     println!("Header: {:?}: {:?}", header.key, header.value)
                                 }
                             }
-                            println!(
-                                "payload: {}, len: {}, offset: {}",
-                                payload,
-                                payload.len(),
-                                m.offset()
-                            );
                             payload.to_string()
                         }
                         Some(Err(_)) => "Message payload is not string".to_owned(),
@@ -54,16 +48,11 @@ pub fn receive_messages<'a>(
                     };
                     let client_clone = client.clone();
                     tokio::spawn(async move {
-                        // println!("process the msg: {}", &tailored);
-
                         match Sensor::from_str(&tailored) {
-                            Ok(s) => {
-                                println!("{:?}", s);
-                                match insert_data(&client_clone, s).await {
-                                    Ok(_) => (),
-                                    Err(e) => println!("{:?}", e.to_string()),
-                                }
-                            }
+                            Ok(s) => match insert_data(&client_clone, s).await {
+                                Ok(_) => (),
+                                Err(e) => println!("{:?}", e.to_string()),
+                            },
                             Err(e) => println!("serde error: {:?}", e.to_string()),
                         }
 
@@ -76,7 +65,6 @@ pub fn receive_messages<'a>(
                             }
                             Err(e) => Err(anyhow::anyhow!("{}", e.to_string())),
                         }
-                        tokio::time::sleep(Duration::from_millis(10_000)).await;
                     });
                 }
                 Err(e) => {

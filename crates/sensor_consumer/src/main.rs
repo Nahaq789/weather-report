@@ -26,7 +26,7 @@ async fn main() -> anyhow::Result<()> {
                     println!("failed to receive: {:?}", e);
                 }
 
-                tokio::time::sleep(Duration::from_secs(5)).await;
+                // tokio::time::sleep(Duration::from_secs(5)).await;
             }
             Err(_) => {
                 tokio::time::sleep(Duration::from_secs(10)).await;

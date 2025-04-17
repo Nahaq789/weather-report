@@ -5,7 +5,7 @@ use sensor_simulator::kafka::producer::{build_producer, send_message};
 async fn main() -> anyhow::Result<()> {
     let producer = build_producer()?;
     let mut tasks = Vec::new();
-    for i in 0..10 {
+    for i in 0..20000 {
         let producer_clone = producer.clone();
         let task = tokio::spawn(async move {
             let area = area::Area::Tokyo;

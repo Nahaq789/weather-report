@@ -1,14 +1,25 @@
+use std::time::Duration;
+
+use aws_config::{retry::RetryConfig, timeout::TimeoutConfig};
 use aws_sdk_dynamodb::{types::AttributeValue, Client};
 use sensor::sensor::Sensor;
 
-const TABLE_NAME: &'static str = "sensor_data";
+const TABLE_NAME: &'static str = "Sensor";
 
 pub fn build_client<'a>(
 ) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<Client>> + Send + 'a>> {
     Box::pin(async move {
+        let timeout_config = TimeoutConfig::builder()
+            .connect_timeout(std::time::Duration::from_secs(30))
+            .operation_timeout(Duration::from_secs(30))
+            .operation_attempt_timeout(Duration::from_secs(30))
+            .build();
+        let retry_config = RetryConfig::standard().with_max_attempts(10);
         let config = aws_config::defaults(aws_config::BehaviorVersion::latest())
             .test_credentials()
             .endpoint_url("http://localhost:8000")
+            .timeout_config(timeout_config)
+            .retry_config(retry_config)
             .load()
             .await;
         let dynamodb_local = aws_sdk_dynamodb::config::Builder::from(&config).build();
@@ -55,7 +66,10 @@ pub fn insert_data<'a>(
             .item("humidity", humidity)
             .item("status", status);
 
-        request.send().await?;
+        match request.send().await {
+            Ok(_) => (),
+            Err(e) => eprintln!("Failed to insert data: {:?}", e),
+        };
         Ok(())
     })
 }

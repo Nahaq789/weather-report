@@ -73,3 +73,6 @@ pub fn insert_data<'a>(
         Ok(())
     })
 }
+
+// TODO
+// batch insert dynamodb

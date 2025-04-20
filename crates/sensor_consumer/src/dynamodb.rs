@@ -25,17 +25,6 @@ pub fn build_client<'a>(
         let dynamodb_local = aws_sdk_dynamodb::config::Builder::from(&config).build();
         let client = aws_sdk_dynamodb::Client::from_conf(dynamodb_local);
 
-        // test code
-        // let list_resp = client.list_tables().send().await;
-        // match list_resp {
-        //     Ok(res) => {
-        //         println!("Found {} tables", res.table_names().len());
-        //         for name in res.table_names() {
-        //             println!("{}", name)
-        //         }
-        //     }
-        //     Err(err) => eprintln!("Failed to list local tables {:?}", err.to_string()),
-        // }
         Ok(client)
     })
 }

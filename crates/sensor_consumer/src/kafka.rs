@@ -1,12 +1,16 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration, usize};
 
-use futures::StreamExt;
+use aws_sdk_dynamodb::types::WriteRequest;
+use futures::{lock::Mutex, StreamExt};
 use rdkafka::{consumer::StreamConsumer, message::Headers, ClientConfig, Message};
 use sensor::sensor::Sensor;
+use tokio::time::sleep;
 
 #[cfg(feature = "with_cassandra")]
 use crate::cassandra::{connect_cluster, save_sensor};
-use crate::dynamodb::{build_client, insert_data};
+use crate::dynamodb::{batch_insert, build_client, sensor_to_write_request};
+
+const BATCH_SIZE: usize = 25;
 
 pub fn build_consumer() -> anyhow::Result<Arc<StreamConsumer>> {
     let consumer = ClientConfig::new()
@@ -31,6 +35,8 @@ pub fn receive_messages<'a>(
     Box::pin(async move {
         let mut message_stream = consumer.stream();
         let client = build_client().await?;
+
+        let batch_buffer = Arc::new(Mutex::new(Vec::<WriteRequest>::with_capacity(BATCH_SIZE)));
         while let Some(message) = message_stream.next().await {
             match message {
                 Ok(m) => {
@@ -47,12 +53,25 @@ pub fn receive_messages<'a>(
                         None => "No payload".to_owned(),
                     };
                     let client_clone = client.clone();
+                    let buffer_clone = batch_buffer.clone();
+
                     tokio::spawn(async move {
                         match Sensor::from_str(&tailored) {
-                            Ok(s) => match insert_data(&client_clone, s).await {
-                                Ok(_) => (),
-                                Err(e) => println!("{:?}", e.to_string()),
-                            },
+                            Ok(s) => {
+                                let write_request = sensor_to_write_request(&s);
+
+                                {
+                                    let mut buffer = buffer_clone.lock().await;
+                                    buffer.push(write_request);
+
+                                    if buffer.len() >= BATCH_SIZE {
+                                        let batch = std::mem::take(&mut *buffer);
+                                        if let Err(e) = batch_insert(&client_clone, batch).await {
+                                            eprintln!("Failed to insert batch: {:?}", e)
+                                        };
+                                    }
+                                }
+                            }
                             Err(e) => println!("serde error: {:?}", e.to_string()),
                         }
 

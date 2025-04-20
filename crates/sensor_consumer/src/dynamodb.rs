@@ -1,7 +1,10 @@
 use std::time::Duration;
 
 use aws_config::{retry::RetryConfig, timeout::TimeoutConfig};
-use aws_sdk_dynamodb::{types::AttributeValue, Client};
+use aws_sdk_dynamodb::{
+    types::{AttributeValue, PutRequest, WriteRequest},
+    Client,
+};
 use sensor::sensor::Sensor;
 
 const TABLE_NAME: &'static str = "Sensor";
@@ -63,5 +66,68 @@ pub fn insert_data<'a>(
     })
 }
 
-// TODO
-// batch insert dynamodb
+pub fn sensor_to_write_request(sensor: &Sensor) -> WriteRequest {
+    let mut item = std::collections::HashMap::new();
+
+    item.insert(
+        "sensor_id".to_string(),
+        AttributeValue::S(sensor.sensor_id().to_string()),
+    );
+    item.insert(
+        "time_stamp".to_string(),
+        AttributeValue::S(sensor.time_stamp().to_string()),
+    );
+    item.insert(
+        "area".to_string(),
+        AttributeValue::S(sensor.location().area().to_string()),
+    );
+    item.insert(
+        "latitude".to_string(),
+        AttributeValue::S(sensor.location().latitude().to_string()),
+    );
+    item.insert(
+        "longitude".to_string(),
+        AttributeValue::S(sensor.location().longitude().to_string()),
+    );
+    item.insert(
+        "temperature".to_string(),
+        AttributeValue::S(sensor.measurements().temperature().to_string()),
+    );
+    item.insert(
+        "humidity".to_string(),
+        AttributeValue::S(sensor.measurements().humidity().to_string()),
+    );
+    item.insert(
+        "status".to_string(),
+        AttributeValue::S(sensor.status().to_string()),
+    );
+
+    WriteRequest::builder()
+        .put_request(PutRequest::builder().set_item(Some(item)).build().unwrap())
+        .build()
+}
+
+pub fn batch_insert<'a>(
+    client: &'a Client,
+    write_requests: Vec<WriteRequest>,
+) -> std::pin::Pin<Box<dyn std::future::Future<Output = anyhow::Result<()>> + Send + 'a>> {
+    Box::pin(async move {
+        if write_requests.is_empty() {
+            return Ok(());
+        }
+        let mut requests = std::collections::HashMap::new();
+        requests.insert(TABLE_NAME.to_string(), write_requests);
+        match client
+            .batch_write_item()
+            .set_request_items(Some(requests))
+            .send()
+            .await
+        {
+            Ok(output) => {
+                println!("{:?}", output);
+                Ok(())
+            }
+            Err(e) => Err(anyhow::anyhow!("{:?}", e)),
+        }
+    })
+}

@@ -1,10 +1,15 @@
-use std::{sync::Arc, time::Duration, usize};
+use std::{
+    sync::{
+        atomic::{AtomicUsize, Ordering},
+        Arc,
+    },
+    usize,
+};
 
 use aws_sdk_dynamodb::types::WriteRequest;
 use futures::{lock::Mutex, StreamExt};
 use rdkafka::{consumer::StreamConsumer, message::Headers, ClientConfig, Message};
 use sensor::sensor::Sensor;
-use tokio::time::sleep;
 
 #[cfg(feature = "with_cassandra")]
 use crate::cassandra::{connect_cluster, save_sensor};
@@ -35,8 +40,10 @@ pub fn receive_messages<'a>(
     Box::pin(async move {
         let mut message_stream = consumer.stream();
         let client = build_client().await?;
-
         let batch_buffer = Arc::new(Mutex::new(Vec::<WriteRequest>::with_capacity(BATCH_SIZE)));
+
+        let mut counter = Arc::new(AtomicUsize::new(0));
+
         while let Some(message) = message_stream.next().await {
             match message {
                 Ok(m) => {
@@ -54,6 +61,7 @@ pub fn receive_messages<'a>(
                     };
                     let client_clone = client.clone();
                     let buffer_clone = batch_buffer.clone();
+                    let counter_clone = counter.clone();
 
                     tokio::spawn(async move {
                         match Sensor::from_str(&tailored) {
@@ -70,6 +78,13 @@ pub fn receive_messages<'a>(
                                             eprintln!("Failed to insert batch: {:?}", e)
                                         };
                                     }
+                                }
+
+                                counter_clone.fetch_add(1, Ordering::Relaxed);
+                                let count = counter_clone.load(Ordering::Relaxed);
+
+                                if count % 1000 == 0 {
+                                    println!("process: {:?}", counter_clone)
                                 }
                             }
                             Err(e) => println!("serde error: {:?}", e.to_string()),

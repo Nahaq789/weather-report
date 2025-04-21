@@ -124,7 +124,7 @@ pub fn batch_insert<'a>(
             .await
         {
             Ok(output) => {
-                println!("{:?}", output);
+                //println!("{:?}", output);
                 Ok(())
             }
             Err(e) => Err(anyhow::anyhow!("{:?}", e)),

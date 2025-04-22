@@ -42,7 +42,7 @@ pub fn receive_messages<'a>(
         let client = build_client().await?;
         let batch_buffer = Arc::new(Mutex::new(Vec::<WriteRequest>::with_capacity(BATCH_SIZE)));
 
-        let mut counter = Arc::new(AtomicUsize::new(0));
+        let counter = Arc::new(AtomicUsize::new(0));
 
         while let Some(message) = message_stream.next().await {
             match message {

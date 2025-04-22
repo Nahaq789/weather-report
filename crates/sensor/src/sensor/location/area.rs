@@ -12,6 +12,19 @@ pub enum Area {
     Nagoya,
 }
 
+impl Area {
+    pub fn build(value: u8) -> Area {
+        match value {
+            0..=19 => Area::Tokyo,
+            20..=39 => Area::Osaka,
+            40..=59 => Area::Sapporo,
+            60..=79 => Area::Fukuoka,
+            80..=99 => Area::Nagoya,
+            _ => Area::Tokyo,
+        }
+    }
+}
+
 #[derive(Error, Debug)]
 pub enum AreaError {
     #[error("Invalid Area: {0}")]

@@ -7,7 +7,7 @@ pub enum Season {
 }
 
 impl Season {
-    pub fn get_current_season(month: u8) -> Season {
+    pub fn build(month: u8) -> Season {
         match month {
             3..=5 => Season::Spring,
             6..=8 => Season::Summer,

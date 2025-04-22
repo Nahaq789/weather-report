@@ -8,6 +8,7 @@ use sensor_simulator::kafka::producer::{build_producer, send_message};
 async fn main() -> anyhow::Result<()> {
     let producer = build_producer()?;
     let mut rng = rand::thread_rng();
+    let mut count = 0;
 
     loop {
         let mut tasks = Vec::new();
@@ -30,7 +31,9 @@ async fn main() -> anyhow::Result<()> {
         }
 
         println!("All messages sent");
-        tokio::time::sleep(Duration::from_secs(3)).await;
+        println!("count: {}", count);
+        count += 1;
+        tokio::time::sleep(Duration::from_secs(600)).await;
 
         for task in tasks {
             let _ = task.await?;

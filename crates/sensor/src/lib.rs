@@ -1,5 +1,6 @@
 use rand::{rngs::ThreadRng, Rng};
 
+pub mod repository;
 pub mod sensor;
 
 // generate noise

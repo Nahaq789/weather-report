@@ -52,6 +52,8 @@ name = "api"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "aws-config",
+ "aws-sdk-dynamodb",
  "axum",
  "tokio",
  "tokio-tungstenite 0.26.2",

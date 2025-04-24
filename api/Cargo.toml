@@ -8,3 +8,6 @@ tokio = { workspace = true }
 axum = { workspace = true }
 anyhow = { workspace = true }
 tokio-tungstenite = { workspace = true }
+
+aws-config = { workspace = true }
+aws-sdk-dynamodb = { workspace = true }

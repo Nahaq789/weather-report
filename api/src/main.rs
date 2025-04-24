@@ -1,7 +1,5 @@
-use std::net::SocketAddr;
-
 use axum::{
-    extract::{ws::WebSocket, ConnectInfo, WebSocketUpgrade},
+    extract::{ws::WebSocket, WebSocketUpgrade},
     response::IntoResponse,
     routing::any,
     Router,
@@ -12,7 +10,7 @@ use tokio::net::TcpListener;
 async fn main() -> anyhow::Result<()> {
     let listener = TcpListener::bind("127.0.0.1:5678").await?;
 
-    let app = Router::new().route("/", any(ws_handler));
+    let app = Router::new().route("/ws", any(ws_handler));
 
     axum::serve(listener, app).await.unwrap();
 
@@ -20,20 +18,21 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn ws_handler(
-    ws: WebSocketUpgrade,
-    ConnectInfo(addr): ConnectInfo<SocketAddr>,
-) -> impl IntoResponse {
-    ws.on_upgrade(move |socket| handle_socket(socket, addr))
+async fn ws_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
+    ws.on_upgrade(move |socket| handle_socket(socket))
 }
 
-async fn handle_socket(mut socket: WebSocket, who: SocketAddr) {
+async fn handle_socket(mut socket: WebSocket) {
     if let Some(msg) = socket.recv().await {
         if let Ok(msg) = msg {
             println!("message: {:?}", msg);
+
+            let res = format!("こんにちは！ {:?}さん", msg);
+            if socket.send(res.into()).await.is_err() {
+                return;
+            }
             return;
         } else {
-            println!("client {:?} abruptly disconnected", who);
             return;
         }
     }

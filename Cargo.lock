@@ -55,6 +55,9 @@ dependencies = [
  "aws-config",
  "aws-sdk-dynamodb",
  "axum",
+ "sensor",
+ "serde",
+ "serde_json",
  "tokio",
  "tokio-tungstenite 0.26.2",
 ]

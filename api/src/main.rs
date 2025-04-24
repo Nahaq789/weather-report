@@ -6,6 +6,8 @@ use axum::{
 };
 use tokio::net::TcpListener;
 
+pub mod dynamodb;
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let listener = TcpListener::bind("127.0.0.1:5678").await?;

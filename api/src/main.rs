@@ -7,6 +7,7 @@ use axum::{
 use tokio::net::TcpListener;
 
 pub mod dynamodb;
+pub mod repository;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

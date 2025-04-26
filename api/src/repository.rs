@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, str::FromStr};
 
 use aws_sdk_dynamodb::{types::AttributeValue, Client};
 use sensor::sensor::Sensor;
@@ -11,7 +11,9 @@ pub struct SensorRepositoryImpl {
 }
 
 impl SensorRepositoryImpl {
-    fn map(items: Vec<HashMap<String, AttributeValue>>) {}
+    fn map(items: HashMap<String, AttributeValue>) {
+        let sensor_id = sensor::sensor::sensor_id::SensorId::from_str("");
+    }
 }
 
 impl sensor::repository::SensorRepository for SensorRepositoryImpl {
@@ -22,9 +24,13 @@ impl sensor::repository::SensorRepository for SensorRepositoryImpl {
         let result = self.client.query().table_name("hoge").send().await?;
 
         if let Some(items) = result.items {
-            let sensors = items.iter().map(|v| v.into()).collect();
-            Ok(sensors)
+            // let sensors = items.iter().map(|v| v.into()).collect();
+            return Ok(vec![]);
         }
         Ok(vec![])
     }
+}
+
+fn as_string<'a>(val: Option<&AttributeValue>, default: &'a str) -> &'a str {
+    val.and_then(|v| v.as_s().ok()).unwrap_or_else(|| default)
 }

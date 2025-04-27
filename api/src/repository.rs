@@ -1,9 +1,12 @@
 use std::{collections::HashMap, str::FromStr};
 
 use aws_sdk_dynamodb::{types::AttributeValue, Client};
-use sensor::sensor::Sensor;
-
-const PAGE_SIZE: i32 = 10;
+use chrono::{DateTime, Local};
+use sensor::sensor::{
+    location::{self, area, latitude, longitude},
+    measurements::{self, humidity, temperature},
+    sensor_id, status, Sensor,
+};
 
 #[derive(Debug)]
 pub struct SensorRepositoryImpl {
@@ -11,8 +14,22 @@ pub struct SensorRepositoryImpl {
 }
 
 impl SensorRepositoryImpl {
-    fn map(items: HashMap<String, AttributeValue>) {
-        let sensor_id = sensor::sensor::sensor_id::SensorId::from_str("");
+    fn map(items: &HashMap<String, AttributeValue>) -> Sensor {
+        let sensor_id =
+            sensor_id::SensorId::from_str(&as_string(items.get("sensor_id"), "")).unwrap();
+        let time_stamp =
+            DateTime::<Local>::from_str(&as_string(items.get("time_stamp"), "")).unwrap();
+        let area = area::Area::from_str(&as_string(items.get("area"), "")).unwrap();
+        let latitude = latitude::Latitude::from(as_string(items.get("latitude"), ""));
+        let longitude = longitude::Longitude::from(as_string(items.get("longitude"), ""));
+        let temperature = temperature::Temperature::from(as_string(items.get("temperature"), ""));
+        let humidity = humidity::Humidity::from(as_string(items.get("humidity"), ""));
+        let status = status::Status::from_str(&as_string(items.get("status"), ""));
+
+        let location = location::Location::from(area, latitude, longitude);
+        let measurements = measurements::Measurements::from(temperature, humidity);
+
+        Sensor::from(sensor_id, location, time_stamp, measurements, status)
     }
 }
 
@@ -24,13 +41,15 @@ impl sensor::repository::SensorRepository for SensorRepositoryImpl {
         let result = self.client.query().table_name("hoge").send().await?;
 
         if let Some(items) = result.items {
-            // let sensors = items.iter().map(|v| v.into()).collect();
-            return Ok(vec![]);
+            let sensors: Vec<Sensor> = items.iter().map(|v| Self::map(v)).collect();
+            return Ok(sensors);
         }
         Ok(vec![])
     }
 }
 
-fn as_string<'a>(val: Option<&AttributeValue>, default: &'a str) -> &'a str {
-    val.and_then(|v| v.as_s().ok()).unwrap_or_else(|| default)
+fn as_string(val: Option<&AttributeValue>, default: &str) -> String {
+    val.and_then(|v| v.as_s().ok())
+        .map(|v| v.to_string())
+        .unwrap_or_else(|| default.to_owned())
 }

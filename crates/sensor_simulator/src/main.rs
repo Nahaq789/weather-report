@@ -12,7 +12,7 @@ async fn main() -> anyhow::Result<()> {
 
     loop {
         let mut tasks = Vec::new();
-        for i in 0..100000 {
+        for i in 0..100 {
             let producer_clone = producer.clone();
 
             let area_value = rng.gen_range(0..99);
@@ -33,7 +33,7 @@ async fn main() -> anyhow::Result<()> {
         println!("All messages sent");
         println!("count: {}", count);
         count += 1;
-        tokio::time::sleep(Duration::from_secs(600)).await;
+        tokio::time::sleep(Duration::from_secs(3)).await;
 
         for task in tasks {
             let _ = task.await?;

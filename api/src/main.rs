@@ -1,5 +1,8 @@
 use axum::{
-    extract::{ws::WebSocket, WebSocketUpgrade},
+    extract::{
+        ws::{Message, WebSocket},
+        WebSocketUpgrade,
+    },
     response::IntoResponse,
     routing::any,
     Router,
@@ -26,17 +29,26 @@ async fn ws_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
 }
 
 async fn handle_socket(mut socket: WebSocket) {
-    if let Some(msg) = socket.recv().await {
+    println!("connection started");
+    while let Some(msg) = socket.recv().await {
         if let Ok(msg) = msg {
-            println!("message: {:?}", msg);
+            match msg {
+                Message::Text(text) => {
+                    println!("{}", text);
 
-            let res = format!("こんにちは！ {:?}さん", msg);
-            if socket.send(res.into()).await.is_err() {
-                return;
+                    if socket.send(Message::from(text)).await.is_err() {
+                        break;
+                    }
+                }
+                Message::Close(_) => {
+                    break;
+                }
+                _ => {
+                    break;
+                }
             }
-            return;
         } else {
-            return;
+            break;
         }
     }
 }

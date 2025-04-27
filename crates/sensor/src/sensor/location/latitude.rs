@@ -1,4 +1,5 @@
-use core::fmt;
+use core::{f64, fmt};
+use std::str::FromStr;
 
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -33,5 +34,19 @@ impl Latitude {
 impl fmt::Display for Latitude {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.value)
+    }
+}
+
+impl From<&str> for Latitude {
+    fn from(value: &str) -> Self {
+        let v = value.parse::<f64>().unwrap();
+        Latitude { value: v }
+    }
+}
+
+impl From<String> for Latitude {
+    fn from(value: String) -> Self {
+        let v = value.parse::<f64>().unwrap();
+        Latitude { value: v }
     }
 }

@@ -1,3 +1,4 @@
+use core::f64;
 use std::fmt;
 
 use rand::Rng;
@@ -33,5 +34,12 @@ impl Longitude {
 impl fmt::Display for Longitude {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.value)
+    }
+}
+
+impl From<String> for Longitude {
+    fn from(value: String) -> Self {
+        let v = value.parse::<f64>().unwrap();
+        Longitude { value: v }
     }
 }

@@ -26,6 +26,14 @@ impl Location {
         }
     }
 
+    pub fn from(area: Area, latitude: Latitude, longitude: Longitude) -> Location {
+        Location {
+            area,
+            latitude,
+            longitude,
+        }
+    }
+
     pub fn area(&self) -> &Area {
         &self.area
     }

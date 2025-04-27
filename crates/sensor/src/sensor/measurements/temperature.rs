@@ -1,3 +1,4 @@
+use core::f64;
 use std::fmt;
 
 use rand::Rng;
@@ -58,5 +59,12 @@ impl Temperature {
 impl fmt::Display for Temperature {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.value)
+    }
+}
+
+impl From<String> for Temperature {
+    fn from(value: String) -> Self {
+        let v = value.parse::<f64>().unwrap();
+        Temperature { value: v }
     }
 }

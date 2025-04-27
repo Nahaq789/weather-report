@@ -1,6 +1,6 @@
 use crate::sensor::location::area::Area;
 use crate::sensor::season::Season;
-use chrono::DateTime;
+use chrono::{DateTime, Local};
 use location::Location;
 use measurements::Measurements;
 use sensor_id::SensorId;
@@ -35,6 +35,7 @@ impl Sensor {
             status,
         }
     }
+
     fn determine_status(measurements: &Measurements) -> Status {
         if measurements.has_severe_anomaly() {
             return Status::Error;
@@ -44,6 +45,22 @@ impl Sensor {
             return Status::Warning;
         }
         Status::Normal
+    }
+
+    pub fn from(
+        sensor_id: SensorId,
+        location: Location,
+        time_stamp: DateTime<Local>,
+        measurements: Measurements,
+        status: Status,
+    ) -> Sensor {
+        Sensor {
+            sensor_id,
+            location,
+            time_stamp,
+            measurements,
+            status,
+        }
     }
 
     pub fn sensor_id(&self) -> &SensorId {

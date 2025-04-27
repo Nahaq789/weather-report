@@ -1,3 +1,4 @@
+use core::f64;
 use std::fmt;
 
 use rand::Rng;
@@ -57,5 +58,12 @@ impl Humidity {
 impl fmt::Display for Humidity {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.value)
+    }
+}
+
+impl From<String> for Humidity {
+    fn from(value: String) -> Self {
+        let v = value.parse::<f64>().unwrap();
+        Humidity { value: v }
     }
 }

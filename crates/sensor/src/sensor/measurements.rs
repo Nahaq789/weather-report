@@ -24,6 +24,13 @@ impl Measurements {
         }
     }
 
+    pub fn from(temperature: Temperature, humidity: Humidity) -> Measurements {
+        Measurements {
+            temperature,
+            humidity,
+        }
+    }
+
     pub fn temperature(&self) -> &Temperature {
         &self.temperature
     }

@@ -75,7 +75,7 @@ pub fn sensor_to_write_request(sensor: &Sensor) -> WriteRequest {
     );
     item.insert(
         "time_stamp".to_string(),
-        AttributeValue::S(sensor.time_stamp().to_string()),
+        AttributeValue::S(sensor.time_stamp().to_rfc3339()),
     );
     item.insert(
         "area".to_string(),

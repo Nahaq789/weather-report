@@ -36,10 +36,7 @@ impl SensorRepositoryImpl {
 }
 
 impl sensor::repository::SensorRepository for SensorRepositoryImpl {
-    async fn get_sensor_data(
-        &self,
-        sensor: &sensor::sensor::Sensor,
-    ) -> anyhow::Result<Vec<Sensor>> {
+    async fn get_sensor_data(&self) -> anyhow::Result<Vec<Sensor>> {
         let result = self.client.query().table_name(TABLE_NAME).send().await?;
 
         if let Some(items) = result.items {

@@ -8,6 +8,8 @@ use sensor::sensor::{
     sensor_id, status, Sensor,
 };
 
+const TABLE_NAME: &'static str = "Sensor";
+
 #[derive(Debug)]
 pub struct SensorRepositoryImpl {
     client: Client,
@@ -38,7 +40,7 @@ impl sensor::repository::SensorRepository for SensorRepositoryImpl {
         &self,
         sensor: &sensor::sensor::Sensor,
     ) -> anyhow::Result<Vec<Sensor>> {
-        let result = self.client.query().table_name("hoge").send().await?;
+        let result = self.client.query().table_name(TABLE_NAME).send().await?;
 
         if let Some(items) = result.items {
             let sensors: Vec<Sensor> = items.iter().map(|v| Self::map(v)).collect();

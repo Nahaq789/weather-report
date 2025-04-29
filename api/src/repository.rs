@@ -1,7 +1,4 @@
-use std::{
-    collections::{hash_map, HashMap},
-    str::FromStr,
-};
+use std::{collections::HashMap, str::FromStr};
 
 use aws_sdk_dynamodb::{types::AttributeValue, Client};
 use chrono::{DateTime, Duration, Local};
@@ -52,9 +49,14 @@ impl sensor::repository::SensorRepository for SensorRepositoryImpl {
             .client
             .query()
             .table_name(TABLE_NAME)
-            .key_condition_expression("#area = :area")
+            .key_condition_expression("#area = :area AND #time_stamp > :time_stamp")
             .expression_attribute_names("#area", "area")
             .expression_attribute_values(":area", AttributeValue::S(area.to_string()))
+            .expression_attribute_names("#time_stamp", "time_stamp")
+            .expression_attribute_values(
+                ":time_stamp",
+                AttributeValue::S(one_minute_ago.to_rfc3339()),
+            )
             .send()
             .await?;
 

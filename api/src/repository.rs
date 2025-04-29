@@ -16,9 +16,12 @@ pub struct SensorRepositoryImpl {
 }
 
 impl SensorRepositoryImpl {
+    pub fn new(client: Client) -> SensorRepositoryImpl {
+        SensorRepositoryImpl { client }
+    }
+
     fn map(items: &HashMap<String, AttributeValue>) -> Sensor {
-        let sensor_id =
-            sensor_id::SensorId::from_str(&as_string(items.get("sensor_id"), "")).unwrap();
+        let sensor_id = sensor_id::SensorId::from(as_string(items.get("sensor_id"), ""));
         let time_stamp =
             DateTime::<Local>::from_str(&as_string(items.get("time_stamp"), "")).unwrap();
         let area = area::Area::from_str(&as_string(items.get("area"), "")).unwrap();
@@ -36,8 +39,16 @@ impl SensorRepositoryImpl {
 }
 
 impl sensor::repository::SensorRepository for SensorRepositoryImpl {
-    async fn get_sensor_data(&self) -> anyhow::Result<Vec<Sensor>> {
-        let result = self.client.query().table_name(TABLE_NAME).send().await?;
+    async fn get_sensor_data(&self, area: &str) -> anyhow::Result<Vec<Sensor>> {
+        let result = self
+            .client
+            .query()
+            .table_name(TABLE_NAME)
+            .key_condition_expression("#area = :area")
+            .expression_attribute_names("#area", "area")
+            .expression_attribute_values(":area", AttributeValue::S(area.to_string()))
+            .send()
+            .await?;
 
         if let Some(items) = result.items {
             let sensors: Vec<Sensor> = items.iter().map(|v| Self::map(v)).collect();

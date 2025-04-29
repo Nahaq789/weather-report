@@ -7,6 +7,9 @@ use axum::{
     routing::any,
     Router,
 };
+use dynamodb::build_client;
+use repository::SensorRepositoryImpl;
+use sensor::repository::SensorRepository;
 use tokio::net::TcpListener;
 
 pub mod dynamodb;
@@ -30,13 +33,18 @@ async fn ws_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
 
 async fn handle_socket(mut socket: WebSocket) {
     println!("connection started");
+    let client = build_client().await.unwrap();
+    let repository = SensorRepositoryImpl::new(client);
+
     while let Some(msg) = socket.recv().await {
         if let Ok(msg) = msg {
             match msg {
                 Message::Text(text) => {
                     println!("{}", text);
+                    let result = repository.get_sensor_data(&text).await.unwrap();
+                    let message = Message::Text(serde_json::to_string(&result).unwrap());
 
-                    if socket.send(Message::from(text)).await.is_err() {
+                    if socket.send(message).await.is_err() {
                         break;
                     }
                 }

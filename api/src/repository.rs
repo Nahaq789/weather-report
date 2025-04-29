@@ -1,7 +1,10 @@
-use std::{collections::HashMap, str::FromStr};
+use std::{
+    collections::{hash_map, HashMap},
+    str::FromStr,
+};
 
 use aws_sdk_dynamodb::{types::AttributeValue, Client};
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Duration, Local};
 use sensor::sensor::{
     location::{self, area, latitude, longitude},
     measurements::{self, humidity, temperature},
@@ -20,7 +23,7 @@ impl SensorRepositoryImpl {
         SensorRepositoryImpl { client }
     }
 
-    fn map(items: &HashMap<String, AttributeValue>) -> Sensor {
+    fn map(items: &HashMap<String, AttributeValue>) -> String {
         let sensor_id = sensor_id::SensorId::from(as_string(items.get("sensor_id"), ""));
         let time_stamp =
             DateTime::<Local>::from_str(&as_string(items.get("time_stamp"), "")).unwrap();
@@ -34,12 +37,17 @@ impl SensorRepositoryImpl {
         let location = location::Location::from(area, latitude, longitude);
         let measurements = measurements::Measurements::from(temperature, humidity);
 
-        Sensor::from(sensor_id, location, time_stamp, measurements, status)
+        let sensor = Sensor::from(sensor_id, location, time_stamp, measurements, status);
+        let serialized = serde_json::to_string(&sensor).unwrap();
+
+        serialized
     }
 }
 
 impl sensor::repository::SensorRepository for SensorRepositoryImpl {
-    async fn get_sensor_data(&self, area: &str) -> anyhow::Result<Vec<Sensor>> {
+    async fn get_sensor_data(&self, area: &str) -> anyhow::Result<Vec<String>> {
+        let one_minute_ago = Local::now() - Duration::minutes(1);
+        println!("{:?}", one_minute_ago);
         let result = self
             .client
             .query()
@@ -51,7 +59,7 @@ impl sensor::repository::SensorRepository for SensorRepositoryImpl {
             .await?;
 
         if let Some(items) = result.items {
-            let sensors: Vec<Sensor> = items.iter().map(|v| Self::map(v)).collect();
+            let sensors: Vec<String> = items.iter().map(|v| Self::map(v)).collect();
             return Ok(sensors);
         }
         Ok(vec![])

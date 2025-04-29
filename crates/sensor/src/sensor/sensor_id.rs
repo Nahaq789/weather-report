@@ -34,6 +34,12 @@ impl From<Uuid> for SensorId {
     }
 }
 
+impl From<String> for SensorId {
+    fn from(value: String) -> Self {
+        SensorId { value }
+    }
+}
+
 impl FromStr for SensorId {
     type Err = SensorIdError;
 

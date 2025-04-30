@@ -1,10 +1,12 @@
+use core::f64;
+
 use crate::sensor::location::area::Area;
 use crate::sensor::season::Season;
 use chrono::{DateTime, Local};
 use location::Location;
 use measurements::Measurements;
 use sensor_id::SensorId;
-use serde::{Deserialize, Serialize};
+use serde::{de::value, Deserialize, Serialize};
 use status::Status;
 
 pub mod location;
@@ -85,5 +87,39 @@ impl Sensor {
 
     pub fn from_str(s: &str) -> Result<Sensor, serde_json::Error> {
         serde_json::from_str(s)
+    }
+
+    pub fn average(values: Vec<f64>) -> f64 {
+        let total: f64 = values.iter().sum();
+        total / values.len() as f64
+    }
+
+    pub fn max(values: Vec<f64>) -> f64 {
+        let mut max = 0.0;
+        if values.is_empty() {
+            return max;
+        }
+
+        for v in values {
+            if max < v {
+                max = v;
+            }
+        }
+        max
+    }
+
+    pub fn min(values: Vec<f64>) -> f64 {
+        if values.is_empty() {
+            return 0.0;
+        }
+
+        let mut min: f64 = values[0];
+
+        for v in values {
+            if min > v {
+                min = v
+            }
+        }
+        min
     }
 }

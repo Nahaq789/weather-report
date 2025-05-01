@@ -165,6 +165,17 @@ impl Sensor {
 
         result
     }
+
+    pub fn mid(values: Vec<f64>) -> f64 {
+        let mid = values.len() / 2;
+        let sorted = Sensor::sort(values);
+        if sorted.len() % 2 == 0 {
+            let first = sorted[mid - 1];
+            let second = sorted[mid];
+            return (first + second) / 2.0;
+        }
+        sorted[mid]
+    }
 }
 
 #[cfg(test)]
@@ -206,6 +217,20 @@ mod tests {
 
         for test in test_case {
             let actual = Sensor::min(test.0);
+            assert_eq!(actual, test.1)
+        }
+    }
+
+    #[test]
+    fn test_mid_success() {
+        let test_case = vec![
+            (vec![9.0, 1.0, 5.0, 8.0, 4.0], 5.0),
+            (vec![4.0, 2.0, 7.0, 6.0, 3.0], 4.0),
+            (vec![3.0, 1.0, 2.0, 4.0], 2.5),
+        ];
+
+        for test in test_case {
+            let actual = Sensor::mid(test.0);
             assert_eq!(actual, test.1)
         }
     }

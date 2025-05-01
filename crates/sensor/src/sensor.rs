@@ -122,4 +122,59 @@ impl Sensor {
         }
         min
     }
+    pub fn sort(values: Vec<f64>) -> Vec<f64> {
+        Self::merge_sort(values)
+    }
+
+    fn merge_sort(values: Vec<f64>) -> Vec<f64> {
+        if values.len() <= 1 {
+            return values;
+        }
+
+        let mid = values.len() / 2;
+        let left = Self::merge_sort(values[0..mid].to_vec());
+        let right = Self::merge_sort(values[mid..].to_vec());
+        Self::merge(left, right)
+    }
+
+    fn merge(left: Vec<f64>, right: Vec<f64>) -> Vec<f64> {
+        let mut result = Vec::new();
+
+        let (mut li, mut ri) = (0, 0);
+        while li < left.len() && ri < right.len() {
+            if left[li] < right[ri] {
+                result.push(left[li]);
+                li += 1;
+            } else {
+                result.push(right[ri]);
+                ri += 1;
+            }
+        }
+
+        while li < left.len() {
+            result.push(left[li]);
+            li += 1;
+        }
+
+        while ri < right.len() {
+            result.push(right[ri]);
+            ri += 1;
+        }
+
+        result
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_sort_success() {
+        let nums = vec![5.0, 0.0, 8.0];
+
+        let actual = Sensor::sort(nums);
+        let expected = vec![0.0, 5.0, 8.0];
+        assert_eq!(actual, expected)
+    }
 }

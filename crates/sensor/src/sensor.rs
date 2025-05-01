@@ -91,8 +91,9 @@ impl Sensor {
 
     pub fn average(values: Vec<f64>) -> f64 {
         let total: f64 = values.iter().sum();
+        let base_number = 100.0;
         let result = total / values.len() as f64;
-        result.round()
+        (result * base_number).round() / base_number
     }
 
     pub fn max(values: Vec<f64>) -> f64 {
@@ -181,10 +182,30 @@ mod tests {
 
     #[test]
     fn test_average_success() {
-        let test_case = vec![(vec![7.0, 0.0, 8.0], 5.0), (vec![1.0, 2.0, 5.0], 2.6)];
+        let test_case = vec![(vec![7.0, 0.0, 8.0], 5.0), (vec![1.0, 2.0, 5.0], 2.67)];
 
         for test in test_case {
             let actual = Sensor::average(test.0);
+            assert_eq!(actual, test.1)
+        }
+    }
+
+    #[test]
+    fn test_max_success() {
+        let test_case = vec![(vec![1.0, 2.0, 3.0], 3.0), (vec![55.0, 27.0, 78.0], 78.0)];
+
+        for test in test_case {
+            let actual = Sensor::max(test.0);
+            assert_eq!(actual, test.1)
+        }
+    }
+
+    #[test]
+    fn test_min_success() {
+        let test_case = vec![(vec![1.0, 2.0, 3.0], 1.0), (vec![55.0, 27.0, 78.0], 27.0)];
+
+        for test in test_case {
+            let actual = Sensor::min(test.0);
             assert_eq!(actual, test.1)
         }
     }

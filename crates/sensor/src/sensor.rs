@@ -6,7 +6,7 @@ use chrono::{DateTime, Local};
 use location::Location;
 use measurements::Measurements;
 use sensor_id::SensorId;
-use serde::{de::value, Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use status::Status;
 
 pub mod location;
@@ -91,7 +91,8 @@ impl Sensor {
 
     pub fn average(values: Vec<f64>) -> f64 {
         let total: f64 = values.iter().sum();
-        total / values.len() as f64
+        let result = total / values.len() as f64;
+        result.round()
     }
 
     pub fn max(values: Vec<f64>) -> f64 {
@@ -176,5 +177,15 @@ mod tests {
         let actual = Sensor::sort(nums);
         let expected = vec![0.0, 5.0, 8.0];
         assert_eq!(actual, expected)
+    }
+
+    #[test]
+    fn test_average_success() {
+        let test_case = vec![(vec![7.0, 0.0, 8.0], 5.0), (vec![1.0, 2.0, 5.0], 2.6)];
+
+        for test in test_case {
+            let actual = Sensor::average(test.0);
+            assert_eq!(actual, test.1)
+        }
     }
 }

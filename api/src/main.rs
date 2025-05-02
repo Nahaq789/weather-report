@@ -14,6 +14,7 @@ use tokio::net::TcpListener;
 
 pub mod dynamodb;
 pub mod repository;
+pub mod sensor_dto;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

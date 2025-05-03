@@ -9,7 +9,10 @@ use axum::{
 };
 use dynamodb::build_client;
 use repository::SensorRepositoryImpl;
-use sensor::repository::SensorRepository;
+use sensor::{
+    repository::SensorRepository,
+    sensor::measurements::{humidity, temperature},
+};
 use tokio::net::TcpListener;
 
 pub mod dynamodb;
@@ -43,7 +46,27 @@ async fn handle_socket(mut socket: WebSocket) {
                 Message::Text(text) => {
                     println!("{}", text);
                     let result = repository.get_sensor_data(&text).await.unwrap();
-                    let message = Message::Text(serde_json::to_string(&result).unwrap());
+                    let mut tasks = Vec::new();
+
+                    let mut temperature_vec: Vec<f64> = Vec::new();
+                    let mut humidity_vec: Vec<f64> = Vec::new();
+
+                    let task = tokio::spawn(async move {
+                        let _t = result.iter().map(|v| {
+                            temperature_vec.push(v.measurements().temperature().value());
+                            humidity_vec.push(v.measurements().humidity().value());
+                        });
+
+                        println!("{:?}", temperature_vec);
+                    });
+
+                    tasks.push(task);
+
+                    for task in tasks {
+                        let _ = task.await.unwrap();
+                    }
+
+                    let message = Message::Text("hoge".to_string());
 
                     if socket.send(message).await.is_err() {
                         break;

@@ -89,28 +89,28 @@ impl Sensor {
         serde_json::from_str(s)
     }
 
-    pub fn average(values: Vec<f64>) -> f64 {
+    pub fn average(values: &Vec<f64>) -> f64 {
         let total: f64 = values.iter().sum();
         let base_number = 100.0;
         let result = total / values.len() as f64;
         (result * base_number).round() / base_number
     }
 
-    pub fn max(values: Vec<f64>) -> f64 {
+    pub fn max(values: &Vec<f64>) -> f64 {
         let mut max = 0.0;
         if values.is_empty() {
             return max;
         }
 
         for v in values {
-            if max < v {
-                max = v;
+            if max < v.clone() {
+                max = v.clone();
             }
         }
         max
     }
 
-    pub fn min(values: Vec<f64>) -> f64 {
+    pub fn min(values: &Vec<f64>) -> f64 {
         if values.is_empty() {
             return 0.0;
         }
@@ -118,8 +118,8 @@ impl Sensor {
         let mut min: f64 = values[0];
 
         for v in values {
-            if min > v {
-                min = v
+            if min > v.clone() {
+                min = v.clone()
             }
         }
         min
@@ -196,7 +196,7 @@ mod tests {
         let test_case = vec![(vec![7.0, 0.0, 8.0], 5.0), (vec![1.0, 2.0, 5.0], 2.67)];
 
         for test in test_case {
-            let actual = Sensor::average(test.0);
+            let actual = Sensor::average(&test.0);
             assert_eq!(actual, test.1)
         }
     }
@@ -206,7 +206,7 @@ mod tests {
         let test_case = vec![(vec![1.0, 2.0, 3.0], 3.0), (vec![55.0, 27.0, 78.0], 78.0)];
 
         for test in test_case {
-            let actual = Sensor::max(test.0);
+            let actual = Sensor::max(&test.0);
             assert_eq!(actual, test.1)
         }
     }
@@ -216,7 +216,7 @@ mod tests {
         let test_case = vec![(vec![1.0, 2.0, 3.0], 1.0), (vec![55.0, 27.0, 78.0], 27.0)];
 
         for test in test_case {
-            let actual = Sensor::min(test.0);
+            let actual = Sensor::min(&test.0);
             assert_eq!(actual, test.1)
         }
     }

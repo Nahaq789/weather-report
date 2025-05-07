@@ -11,7 +11,7 @@ use dynamodb::build_client;
 use repository::SensorRepositoryImpl;
 use sensor::{
     repository::SensorRepository,
-    sensor::measurements::{humidity, temperature},
+    sensor::{status::Status, Sensor},
 };
 use tokio::net::TcpListener;
 
@@ -44,27 +44,24 @@ async fn handle_socket(mut socket: WebSocket) {
         if let Ok(msg) = msg {
             match msg {
                 Message::Text(text) => {
-                    println!("{}", text);
                     let result = repository.get_sensor_data(&text).await.unwrap();
-                    let mut tasks = Vec::new();
 
                     let mut temperature_vec: Vec<f64> = Vec::new();
                     let mut humidity_vec: Vec<f64> = Vec::new();
 
-                    let task = tokio::spawn(async move {
-                        let _t = result.iter().map(|v| {
-                            temperature_vec.push(v.measurements().temperature().value());
-                            humidity_vec.push(v.measurements().humidity().value());
-                        });
-
-                        println!("{:?}", temperature_vec);
-                    });
-
-                    tasks.push(task);
-
-                    for task in tasks {
-                        let _ = task.await.unwrap();
+                    for sensor in &result {
+                        temperature_vec.push(sensor.measurements().temperature().value());
+                        humidity_vec.push(sensor.measurements().humidity().value());
                     }
+
+                    let errors = result
+                        .iter()
+                        .filter(|v| *v.status() == Status::Error)
+                        .map(|sensor| *sensor.clone())
+                        .collect::<Vec<Sensor>>();
+
+                    let status = sensor_dto::Status::new(errors.len(), time, errors);
+                    let aggregate = sensor_dto::Aggregate::build(temperature_vec, humidity_vec);
 
                     let message = Message::Text("hoge".to_string());
 

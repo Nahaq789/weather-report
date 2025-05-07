@@ -1,5 +1,4 @@
 use core::{f64, fmt};
-use std::str::FromStr;
 
 use rand::Rng;
 use serde::{Deserialize, Serialize};

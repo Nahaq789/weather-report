@@ -41,6 +41,7 @@ impl SensorRepositoryImpl {
 impl sensor::repository::SensorRepository for SensorRepositoryImpl {
     async fn get_sensor_data(&self, area: &str) -> anyhow::Result<Vec<Sensor>> {
         let one_minute_ago = Local::now() - Duration::minutes(1);
+        let formatted_timestamp = one_minute_ago.format("%Y-%m-%dT%H:%M:%S").to_string();
         println!("{:?}", one_minute_ago);
         let result = self
             .client
@@ -50,10 +51,7 @@ impl sensor::repository::SensorRepository for SensorRepositoryImpl {
             .expression_attribute_names("#area", "area")
             .expression_attribute_values(":area", AttributeValue::S(area.to_string()))
             .expression_attribute_names("#time_stamp", "time_stamp")
-            .expression_attribute_values(
-                ":time_stamp",
-                AttributeValue::S(one_minute_ago.to_rfc3339()),
-            )
+            .expression_attribute_values(":time_stamp", AttributeValue::S(formatted_timestamp))
             .send()
             .await?;
 

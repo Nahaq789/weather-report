@@ -9,7 +9,23 @@ pub struct SensorDto {
     location: String,
     time_stamp: DateTime<Local>,
     aggregate: Aggregate,
-    status: Status,
+    status: Option<Status>,
+}
+
+impl SensorDto {
+    pub fn build(
+        location: String,
+        time_stamp: DateTime<Local>,
+        aggregate: Aggregate,
+        status: Option<Status>,
+    ) -> SensorDto {
+        SensorDto {
+            location,
+            time_stamp,
+            aggregate,
+            status,
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]

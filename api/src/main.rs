@@ -7,12 +7,14 @@ use axum::{
     routing::any,
     Router,
 };
+use chrono::Local;
 use dynamodb::build_client;
 use repository::SensorRepositoryImpl;
 use sensor::{
     repository::SensorRepository,
     sensor::{status::Status, Sensor},
 };
+use sensor_dto::SensorDto;
 use tokio::net::TcpListener;
 
 pub mod dynamodb;
@@ -53,20 +55,51 @@ async fn handle_socket(mut socket: WebSocket) {
                         temperature_vec.push(sensor.measurements().temperature().value());
                         humidity_vec.push(sensor.measurements().humidity().value());
                     }
+                    let aggregate = sensor_dto::Aggregate::build(temperature_vec, humidity_vec);
 
                     let errors = result
                         .iter()
                         .filter(|v| *v.status() == Status::Error)
-                        .map(|sensor| *sensor.clone())
+                        .cloned()
                         .collect::<Vec<Sensor>>();
+                    let time_stamp = Local::now();
 
-                    let status = sensor_dto::Status::new(errors.len(), time, errors);
-                    let aggregate = sensor_dto::Aggregate::build(temperature_vec, humidity_vec);
+                    if !errors.is_empty() {
+                        let last_error = errors.last().unwrap();
+                        let status = sensor_dto::Status::new(
+                            errors.len(),
+                            last_error.time_stamp().clone(),
+                            errors,
+                        );
 
-                    let message = Message::Text("hoge".to_string());
+                        let sensor = sensor_dto::SensorDto::build(
+                            text.to_string(),
+                            time_stamp,
+                            aggregate,
+                            Some(status),
+                        );
+                        match serde_json::to_string::<SensorDto>(&sensor) {
+                            Ok(s) => {
+                                let message = Message::Text(s);
+                                if socket.send(message).await.is_err() {
+                                    break;
+                                }
+                            }
+                            Err(e) => println!("{:?}", e),
+                        }
+                        return;
+                    }
 
-                    if socket.send(message).await.is_err() {
-                        break;
+                    let sensor =
+                        sensor_dto::SensorDto::build(text.to_string(), time_stamp, aggregate, None);
+                    match serde_json::to_string(&sensor) {
+                        Ok(s) => {
+                            let message = Message::Text(s);
+                            if socket.send(message).await.is_err() {
+                                break;
+                            }
+                        }
+                        Err(e) => println!("{:?}", e),
                     }
                 }
                 Message::Close(_) => {

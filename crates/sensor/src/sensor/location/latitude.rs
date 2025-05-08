@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use super::area::Area;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Latitude {
     value: f64,
 }

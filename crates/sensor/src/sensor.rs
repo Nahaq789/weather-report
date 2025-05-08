@@ -15,7 +15,7 @@ pub mod season;
 pub mod sensor_id;
 pub mod status;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Sensor {
     sensor_id: SensorId,
     location: Location,

@@ -9,7 +9,7 @@ use crate::{
     sensor::{location::area::Area, season::Season},
 };
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Humidity {
     value: f64,
 }

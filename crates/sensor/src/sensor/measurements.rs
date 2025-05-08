@@ -7,7 +7,7 @@ use super::{location::area::Area, season::Season};
 pub mod humidity;
 pub mod temperature;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Measurements {
     temperature: Temperature,
     humidity: Humidity,

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use super::area::Area;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Longitude {
     value: f64,
 }

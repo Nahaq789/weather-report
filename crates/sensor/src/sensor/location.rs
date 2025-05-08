@@ -7,7 +7,7 @@ pub mod area;
 pub mod latitude;
 pub mod longitude;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Location {
     area: Area,
     latitude: Latitude,

@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use super::location::area::Area;
 
-#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone)]
 pub struct SensorId {
     value: String,
 }

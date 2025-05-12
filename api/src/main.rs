@@ -25,7 +25,9 @@ pub mod sensor_dto;
 async fn main() -> anyhow::Result<()> {
     let listener = TcpListener::bind("127.0.0.1:5678").await?;
 
-    let app = Router::new().route("/ws", any(ws_handler));
+    let app = Router::new()
+        .route("/ws", any(ws_handler))
+        .route("/hoge", any(ws_hoge_handler));
 
     axum::serve(listener, app).await.unwrap();
 
@@ -35,6 +37,22 @@ async fn main() -> anyhow::Result<()> {
 
 async fn ws_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
     ws.on_upgrade(move |socket| handle_socket(socket))
+}
+
+async fn ws_hoge_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
+    ws.on_upgrade(move |socket| handle_hoge(socket))
+}
+
+async fn handle_hoge(mut socket: WebSocket) {
+    while let Some(msg) = socket.recv().await {
+        if socket
+            .send(Message::Text("hoge".to_string()))
+            .await
+            .is_err()
+        {
+            break;
+        }
+    }
 }
 
 async fn handle_socket(mut socket: WebSocket) {

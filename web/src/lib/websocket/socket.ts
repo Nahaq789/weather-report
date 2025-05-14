@@ -1,7 +1,7 @@
 import { atom, useAtom } from "jotai";
 import { useEffect } from "react";
 
-const url = "ws://localhost:5678";
+const url = "ws://localhost:5678/hoge";
 
 const socketAtom = atom<WebSocket | null>(null);
 
@@ -11,19 +11,23 @@ export const useSensor = () => {
   useEffect(() => {
     setSocket((socket) => {
       if (socket) return socket;
-      return new WebSocket(url)
-    })
+      return new WebSocket(url);
+    });
   }, [setSocket]);
 
   useEffect(() => {
     if (socket) {
       socket.onmessage = (res) => {
         console.log(res);
-      }
+      };
     }
-  }, [socket])
+  }, [socket]);
 
   const sendMessage = () => {
     socket?.send("hoge");
-  }
-}
+  };
+
+  return {
+    sendMessage,
+  };
+};

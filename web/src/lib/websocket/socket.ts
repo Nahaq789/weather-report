@@ -14,4 +14,16 @@ export const useSensor = () => {
       return new WebSocket(url)
     })
   }, [setSocket]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.onmessage = (res) => {
+        console.log(res);
+      }
+    }
+  }, [socket])
+
+  const sendMessage = () => {
+    socket?.send("hoge");
+  }
 }

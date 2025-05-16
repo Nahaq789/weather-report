@@ -12,7 +12,7 @@ import React from "react";
 const DashboardLayout = () => {
   const { sendMessage } = useSensor();
   const onClicked = () => {
-    sendMessage();
+    sendMessage("hoge");
     console.log("Button clicked");
   };
   return (

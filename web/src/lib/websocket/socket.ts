@@ -23,7 +23,7 @@ export const useSensor = () => {
     }
   }, [socket]);
 
-  const sendMessage = () => {
+  const sendMessage = (some: string) => {
     socket?.send("hoge");
   };
 

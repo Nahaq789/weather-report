@@ -1,4 +1,25 @@
+import { useSensor } from "@/hooks/useSensor";
+import { Sensor } from "@/models/sensor/sensor";
+import { useEffect, useState } from "react";
+
 const Measurements = () => {
+	const { sendMessage, data, connected } = useSensor();
+	const [sensors, setSensors] = useState<Sensor[]>([]);
+
+	useEffect(() => {
+		if (connected) {
+			sendMessage("hoge");
+		}
+	}, [connected, sendMessage]);
+
+	useEffect(() => {
+		if (data) {
+			setSensors(prev => [...prev, data])
+		}
+	}, [data]);
+
+	console.log(sensors);
+
 	return (
 		<>
 			<div className="bg-white rounded-lg shadow-md p-4">

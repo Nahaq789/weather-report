@@ -9,7 +9,6 @@ export const useSensor = () => {
 		if (!socket) return;
 
 		socket.onmessage = (event) => {
-			console.log(event);
 			setData(event.data);
 		};
 	}, [socket]);

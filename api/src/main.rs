@@ -46,7 +46,7 @@ async fn ws_hoge_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
 }
 
 async fn handle_hoge(mut socket: WebSocket) {
-    while let Some(msg) = socket.recv().await {
+    while let Some(_msg) = socket.recv().await {
         if socket
             .send(Message::Text("fuga".to_string()))
             .await
@@ -56,7 +56,14 @@ async fn handle_hoge(mut socket: WebSocket) {
         }
 
         for i in 0..100 {
-            socket.send(Message::Text(i.to_string())).await;
+            #[cfg(feature = "not_docker")]
+            {
+                let result = SensorDto::generate();
+                let msg = Message::Text(serde_json::to_string::<SensorDto>(&result).unwrap());
+                let _ = socket.send(msg).await;
+            }
+
+            let _ = socket.send(Message::Text(i.to_string())).await;
             tokio::time::sleep(Duration::from_secs(2)).await;
         }
     }

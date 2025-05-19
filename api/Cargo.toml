@@ -3,6 +3,10 @@ name = "api"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = []
+not_docker = ["rand"]
+
 [dependencies]
 tokio = { workspace = true }
 axum = { workspace = true }
@@ -16,3 +20,5 @@ aws-config = { workspace = true }
 aws-sdk-dynamodb = { workspace = true }
 
 sensor = { path = "../crates/sensor" }
+
+rand = { workspace = true, optional = true }

@@ -5,7 +5,7 @@
     "ignore": [],
     "attributePosition": "auto",
     "indentStyle": "tab",
-    "indentWidth": 2,
+    "indentWidth": 1,
     "lineEnding": "lf",
     "lineWidth": 80
   },
@@ -24,5 +24,8 @@
     "formatter": {
       "trailingCommas": "none"
     }
+  },
+  "linter": {
+    "enabled": true
   }
 }

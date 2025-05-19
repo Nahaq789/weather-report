@@ -10,29 +10,29 @@ import { useSensor } from "@/hooks/useSensor";
 import React from "react";
 
 const DashboardLayout = () => {
-  const { sendMessage } = useSensor();
-  const onClicked = () => {
-    sendMessage("222");
-    console.log("clicked");
-  }
+	const { sendMessage } = useSensor();
+	const onClicked = () => {
+		sendMessage("222");
+		console.log("clicked");
+	};
 
-  return (
-    <div className="flex flex-col w-full h-screen bg-gray-50 text-gray-800 overflow-auto">
-      <Header />
-      <main className="flex-grow p-4 grid grid-cols-12 gap-4">
-        <Sidebar />
-        <div className="col-span-7 space-y-4">
-          <CurrentBoard />
-          <Measurements />
-        </div>
-        <div className="col-span-3 space-y-4">
-          <Alert />
-          <Status />
-        </div>
-      </main>
-      <button onClick={onClicked}>hoge</button>
-    </div>
-  );
+	return (
+		<div className="flex flex-col w-full h-screen bg-gray-50 text-gray-800 overflow-auto">
+			<Header />
+			<main className="flex-grow p-4 grid grid-cols-12 gap-4">
+				<Sidebar />
+				<div className="col-span-7 space-y-4">
+					<CurrentBoard />
+					<Measurements />
+				</div>
+				<div className="col-span-3 space-y-4">
+					<Alert />
+					<Status />
+				</div>
+			</main>
+			<button onClick={onClicked}>hoge</button>
+		</div>
+	);
 };
 
 export default DashboardLayout;

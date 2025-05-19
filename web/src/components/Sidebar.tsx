@@ -24,13 +24,6 @@ const Sidebar = () => {
 				<h2 className="font-semibold text-lg mt-6 mb-4 border-b pb-2">設定</h2>
 				<div className="space-y-4">
 					<div>
-						<label className="block text-sm mb-1">表示単位</label>
-						<select className="w-full p-2 border rounded-md bg-gray-50">
-							<option>摂氏 (°C)</option>
-							<option>華氏 (°F)</option>
-						</select>
-					</div>
-					<div>
 						<label className="block text-sm mb-1">更新間隔</label>
 						<select className="w-full p-2 border rounded-md bg-gray-50">
 							<option>5秒</option>

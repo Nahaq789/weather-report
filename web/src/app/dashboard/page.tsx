@@ -6,16 +6,9 @@ import Measurements from "@/components/dashboard/measurements";
 import Status from "@/components/dashboard/status";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { useSensor } from "@/hooks/useSensor";
 import React from "react";
 
 const DashboardLayout = () => {
-	const { sendMessage } = useSensor();
-	const onClicked = () => {
-		sendMessage("222");
-		console.log("clicked");
-	};
-
 	return (
 		<div className="flex flex-col w-full h-screen bg-gray-50 text-gray-800 overflow-auto">
 			<Header />
@@ -30,7 +23,6 @@ const DashboardLayout = () => {
 					<Status />
 				</div>
 			</main>
-			<button onClick={onClicked}>hoge</button>
 		</div>
 	);
 };

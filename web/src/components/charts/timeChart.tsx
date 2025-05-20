@@ -1,17 +1,27 @@
+import { Sensor } from "@/models/sensor/sensor";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-
-
-const series = [{
-  data: [23, 24, 25, 13, 47, 23, 89, 21]
-}];
 
 const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
   loading: () => <div>loading...</div>
 })
 
-const TimeChart = () => {
+interface TimeChartProps {
+  sensors: Sensor[]
+}
+
+const TimeChart = ({ sensors }: TimeChartProps) => {
+  console.log(sensors.map(sensor => sensor.location));
+  const series = [{
+    name: "temperature",
+    data: [23, 24, 25, 13, 47, 23, 89, 21]
+  },
+  {
+    name: "humidity",
+    data: [11, 45, 26, 130, 7, 3, 14, 32]
+  }
+  ];
   const options = {
     chart: {
       height: "100%"

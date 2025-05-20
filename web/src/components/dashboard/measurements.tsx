@@ -19,7 +19,6 @@ const Measurements = () => {
 		}
 	}, [data]);
 
-	console.log(sensors);
 
 	return (
 		<>
@@ -28,7 +27,7 @@ const Measurements = () => {
 					温度・湿度の推移（過去1時間）
 				</h2>
 				<div className="h-full bg-gray-100 rounded-md flex items-center justify-center">
-					<TimeChart />
+					<TimeChart sensors={sensors} />
 				</div>
 			</div>
 		</>

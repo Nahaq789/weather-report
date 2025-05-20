@@ -1,6 +1,7 @@
 import { useSensor } from "@/hooks/useSensor";
 import { Sensor } from "@/models/sensor/sensor";
 import { useEffect, useState } from "react";
+import TimeChart from "../charts/timeChart";
 
 const Measurements = () => {
 	const { sendMessage, data, connected } = useSensor();
@@ -27,7 +28,7 @@ const Measurements = () => {
 					温度・湿度の推移（過去1時間）
 				</h2>
 				<div className="h-64 bg-gray-100 rounded-md flex items-center justify-center">
-					<div className="text-gray-400">温度・湿度グラフが表示されます</div>
+					<TimeChart />
 				</div>
 			</div>
 		</>

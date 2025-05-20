@@ -12,7 +12,6 @@ interface TimeChartProps {
 }
 
 const TimeChart = ({ sensors }: TimeChartProps) => {
-  console.log(sensors.map(sensor => sensor.location));
   const series = [{
     name: "temperature",
     data: [23, 24, 25, 13, 47, 23, 89, 21]
@@ -20,6 +19,10 @@ const TimeChart = ({ sensors }: TimeChartProps) => {
   {
     name: "humidity",
     data: [11, 45, 26, 130, 7, 3, 14, 32]
+  },
+  {
+    name: "hoge",
+    data: sensors.map(sensor => sensor.aggregate.temperature.avg)
   }
   ];
   const options = {

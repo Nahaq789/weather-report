@@ -10,9 +10,11 @@
     "format": "biome format --write ./src"
   },
   "dependencies": {
+    "apexcharts": "^4.7.0",
     "jotai": "^2.12.4",
     "next": "15.3.2",
     "react": "^19.0.0",
+    "react-apexcharts": "^1.7.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {

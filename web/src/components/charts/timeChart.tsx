@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-const options = {};
+
 const series = [{
   data: [23, 24, 25, 13, 47, 23, 89, 21]
 }];
@@ -12,6 +12,11 @@ const Chart = dynamic(() => import("react-apexcharts"), {
 })
 
 const TimeChart = () => {
+  const options = {
+    chart: {
+      height: "100%"
+    }
+  };
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -24,7 +29,7 @@ const TimeChart = () => {
 
   return (
     <>
-      <div>
+      <div className="w-full h-full">
         <Chart type="line" options={options} series={series}></Chart>
       </div >
     </>

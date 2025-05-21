@@ -67,7 +67,7 @@ async fn handle_socket(mut socket: WebSocket) {
     while let Some(msg) = socket.recv().await {
         if let Ok(msg) = msg {
             match msg {
-                Message::Text(text) => {
+                Message::Text(text) => loop {
                     let result = repository.get_sensor_data(&text).await.unwrap();
 
                     let mut temperature_vec: Vec<f64> = Vec::new();
@@ -123,7 +123,9 @@ async fn handle_socket(mut socket: WebSocket) {
                         }
                         Err(e) => println!("{:?}", e),
                     }
-                }
+
+                    tokio::time::sleep(Duration::from_secs(5)).await
+                },
                 Message::Close(_) => {
                     break;
                 }

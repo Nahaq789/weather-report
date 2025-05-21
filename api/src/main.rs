@@ -25,6 +25,7 @@ pub mod sensor_dto;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    tracing_subscriber::fmt().with_ansi(false).json().init();
     let listener = TcpListener::bind("127.0.0.1:5678").await?;
 
     let app = Router::new()
@@ -68,6 +69,7 @@ async fn handle_socket(mut socket: WebSocket) {
         if let Ok(msg) = msg {
             match msg {
                 Message::Text(text) => loop {
+                    tracing::info!("received message: {:?}", text);
                     let result = repository.get_sensor_data(&text).await.unwrap();
 
                     let mut temperature_vec: Vec<f64> = Vec::new();

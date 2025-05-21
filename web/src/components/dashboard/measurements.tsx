@@ -15,7 +15,13 @@ const Measurements = () => {
 		if (connected) {
 			sendMessage(area);
 		}
-	}, [connected, sendMessage]);
+	}, [connected, sendMessage, area]);
+
+	useEffect(() => {
+		setSensors([]);
+	}, [area]);
+
+	console.log(sensors);
 
 	useEffect(() => {
 		if (data) {

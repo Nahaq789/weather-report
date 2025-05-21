@@ -29,7 +29,6 @@ const timeLine = [
 ].reverse();
 const TimeChart = ({ sensors }: TimeChartProps) => {
 	const categories = timeLine.slice(timeLine.length - sensors.length, 14);
-	console.log(timeLine.slice(timeLine.length - sensors.length, 14));
 	const series = [
 		{
 			name: "hoge",

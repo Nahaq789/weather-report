@@ -18,20 +18,21 @@ const Measurements = () => {
 		if (data) {
 			try {
 				const parsedData = JSON.parse(data);
-				setSensors(prev => [...prev, parsedData]);
+
+				setSensors((prev) => {
+					const newSensors = [...prev, parsedData];
+
+					const ten = dayjs().subtract(1, "minute");
+					return newSensors.filter((sensor) => {
+						const sensorTime = dayjs(sensor.time_stamp);
+						return sensorTime.isAfter(ten) || sensorTime.isSame(ten);
+					});
+				});
 			} catch (error) {
-				console.error('Failed to parse sensor data', error);
+				console.error("Failed to parse sensor data", error);
 			}
 		}
 	}, [data]);
-
-	const recentSensors = sensors.filter(sensor => {
-		const sensorTime = dayjs(sensor.timeStamp);
-		const oneMinuteAgo = dayjs().subtract(10, 'second');
-		return sensorTime.isAfter(oneMinuteAgo);
-	});
-
-	console.log(recentSensors);
 
 	return (
 		<>
@@ -40,7 +41,7 @@ const Measurements = () => {
 					温度・湿度の推移（過去1時間）
 				</h2>
 				<div className="h-full bg-gray-100 rounded-md flex items-center justify-center">
-					<TimeChart sensors={recentSensors} />
+					<TimeChart sensors={sensors} />
 				</div>
 			</div>
 		</>

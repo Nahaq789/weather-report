@@ -28,7 +28,7 @@ async fn main() -> anyhow::Result<()> {
     let listener = TcpListener::bind("127.0.0.1:5678").await?;
 
     let app = Router::new()
-        .route("/ws", any(ws_handler))
+        .route("/sensor", any(sensor_handler))
         .route("/hoge", any(ws_hoge_handler));
 
     axum::serve(listener, app).await.unwrap();
@@ -37,7 +37,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn ws_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
+async fn sensor_handler(ws: WebSocketUpgrade) -> impl IntoResponse {
     ws.on_upgrade(move |socket| handle_socket(socket))
 }
 

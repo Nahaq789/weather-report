@@ -2,7 +2,7 @@ import { useWebSocket } from "@/lib/websocket/socket";
 import { useEffect, useState } from "react";
 
 export const useSensor = () => {
-	const { socket, connected } = useWebSocket("ws://localhost:5678/hoge");
+	const { socket, connected } = useWebSocket("ws://localhost:5678/sensor");
 	const [data, setData] = useState(null);
 
 	useEffect(() => {

@@ -3,14 +3,17 @@ import { Sensor } from "@/models/sensor/sensor";
 import { useEffect, useState } from "react";
 import TimeChart from "../charts/timeChart";
 import dayjs from "dayjs";
+import { useAtom } from "jotai";
+import { areaAtom } from "@/atoms/areaAtom";
 
 const Measurements = () => {
 	const { sendMessage, data, connected } = useSensor();
 	const [sensors, setSensors] = useState<Sensor[]>([]);
+	const [area] = useAtom(areaAtom);
 
 	useEffect(() => {
 		if (connected) {
-			sendMessage("hoge");
+			sendMessage(area);
 		}
 	}, [connected, sendMessage]);
 

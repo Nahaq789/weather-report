@@ -12,7 +12,21 @@ interface TimeChartProps {
 	sensors: Sensor[];
 }
 
-const timeLine = ["現在", "5秒", "10秒", "15秒", "20秒", "25秒", "30秒", "35秒", "40秒", "45秒", "50秒", "55秒", "60秒"].reverse();
+const timeLine = [
+	"現在",
+	"5秒",
+	"10秒",
+	"15秒",
+	"20秒",
+	"25秒",
+	"30秒",
+	"35秒",
+	"40秒",
+	"45秒",
+	"50秒",
+	"55秒",
+	"60秒",
+].reverse();
 const TimeChart = ({ sensors }: TimeChartProps) => {
 	const categories = timeLine.slice(timeLine.length - sensors.length, 14);
 	console.log(timeLine.slice(timeLine.length - sensors.length, 14));
@@ -27,11 +41,11 @@ const TimeChart = ({ sensors }: TimeChartProps) => {
 			height: "100%",
 		},
 		stroke: {
-			curve: "smooth"
+			curve: "smooth",
 		},
 		xaxis: {
 			categories: categories,
-		}
+		},
 	};
 	const [isClient, setIsClient] = useState(false);
 

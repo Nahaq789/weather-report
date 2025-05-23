@@ -8,8 +8,9 @@ export const useWebSocket = (url: string, reconnectKey?: string) => {
 	const [connected, setConnected] = useState(false);
 
 	useEffect(() => {
-		if (socket && socket.readyState === WebSocket.OPEN) {
+		if (socket) {
 			socket.close();
+			setConnected(false);
 		}
 		const newSocket = new WebSocket(url);
 		newSocket.onopen = () => setConnected(true);
@@ -21,7 +22,7 @@ export const useWebSocket = (url: string, reconnectKey?: string) => {
 		setSocket(newSocket);
 
 		return () => {
-			if (socket && socket.readyState === WebSocket.OPEN) {
+			if (socket && socket.readyState === WebSocket.OPEN || socket?.readyState === WebSocket.CONNECTING) {
 				socket.close();
 			}
 		};

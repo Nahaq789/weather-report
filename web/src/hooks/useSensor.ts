@@ -14,7 +14,7 @@ export const useSensor = (area: string) => {
 	}, [socket]);
 
 	const sendMessage = (message: string) => {
-		if (connected && socket) {
+		if (connected && socket && socket.readyState === WebSocket.OPEN) {
 			socket.send(message);
 			return true;
 		}

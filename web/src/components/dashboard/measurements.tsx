@@ -12,9 +12,14 @@ const Measurements = () => {
   const [sensors, setSensors] = useState<Sensor[]>([]);
 
   useEffect(() => {
-    if (connected) {
+    let isActive = true;
+    if (connected && isActive) {
       console.log("area: ", area);
       sendMessage(area);
+    }
+
+    return () => {
+      isActive = false;
     }
   }, [connected, sendMessage, area]);
 

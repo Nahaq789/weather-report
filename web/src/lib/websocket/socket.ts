@@ -22,7 +22,7 @@ export const useWebSocket = (url: string, reconnectKey?: string) => {
 		setSocket(newSocket);
 
 		return () => {
-			if (socket && socket.readyState === WebSocket.OPEN || socket?.readyState === WebSocket.CONNECTING) {
+			if (socket && socket.readyState === WebSocket.OPEN) {
 				socket.close();
 			}
 		};

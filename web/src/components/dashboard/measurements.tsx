@@ -7,9 +7,9 @@ import { useAtom } from "jotai";
 import { areaAtom } from "@/atoms/areaAtom";
 
 const Measurements = () => {
-  const { sendMessage, data, connected } = useSensor();
-  const [sensors, setSensors] = useState<Sensor[]>([]);
   const [area] = useAtom(areaAtom);
+  const { sendMessage, data, connected } = useSensor(area);
+  const [sensors, setSensors] = useState<Sensor[]>([]);
 
   useEffect(() => {
     if (connected) {
@@ -21,8 +21,6 @@ const Measurements = () => {
   useEffect(() => {
     setSensors([]);
   }, [area]);
-
-  console.log(sensors);
 
   useEffect(() => {
     if (data) {

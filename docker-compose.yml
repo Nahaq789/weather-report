@@ -57,3 +57,22 @@ services:
       - DYNAMO_ENDPOINT=http://dynamodb:8000
     depends_on:
       - dynamodb 
+
+  sensor-consumer:
+    build:
+      context: .
+      dockerfile: ./crates/sensor_consumer/Dockerfile
+    container_name: sensor-consumer
+    depends_on:
+      - kafka
+      - dynamodb
+    environment:
+      # Kafka設定
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      # DynamoDB設定
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+      # AWS認証情報（ローカル開発用）
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+    restart: unless-stopped

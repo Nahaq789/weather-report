@@ -1,3 +1,5 @@
+use std::env;
+
 use rdkafka::{
     error::KafkaError,
     producer::{FutureProducer, FutureRecord},
@@ -7,8 +9,10 @@ use rdkafka::{
 use sensor::sensor;
 
 pub fn build_producer() -> Result<FutureProducer, KafkaError> {
+    let bootstrap_servers =
+        env::var("KAFKA_SERVER").unwrap_or_else(|_| "localhost:9094".to_string());
     ClientConfig::new()
-        .set("bootstrap.servers", "localhost:9094")
+        .set("bootstrap.servers", &bootstrap_servers)
         .set("message.timeout.ms", "5000")
         .create::<FutureProducer>()
 }

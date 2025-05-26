@@ -1,4 +1,5 @@
 use std::{
+    env,
     sync::{
         atomic::{AtomicUsize, Ordering},
         Arc,
@@ -18,8 +19,11 @@ use crate::dynamodb::{batch_insert, build_client, sensor_to_write_request};
 const BATCH_SIZE: usize = 25;
 
 pub fn build_consumer() -> anyhow::Result<Arc<StreamConsumer>> {
+    let bootstrap_servers =
+        env::var("KAFKA_SERVER").unwrap_or_else(|_| "localhost:9094".to_string());
+    println!("server port: {}", bootstrap_servers);
     let consumer = ClientConfig::new()
-        .set("bootstrap.servers", "localhost:9094")
+        .set("bootstrap.servers", &bootstrap_servers)
         .set("enable.partition.eof", "false")
         .set("auto.offset.reset", "earliest")
         .set("session.timeout.ms", "30000")

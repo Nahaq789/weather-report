@@ -119,6 +119,7 @@ async fn handle_socket(mut socket: WebSocket) {
                     match serde_json::to_string(&sensor) {
                         Ok(s) => {
                             let message = Message::Text(s);
+                            tracing::info!("{:?}", message);
                             if socket.send(message).await.is_err() {
                                 break;
                             }

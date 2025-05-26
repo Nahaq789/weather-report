@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{env, time::Duration};
 
 use aws_config::{retry::RetryConfig, timeout::TimeoutConfig};
 use aws_sdk_dynamodb::{
@@ -18,9 +18,12 @@ pub fn build_client<'a>(
             .operation_attempt_timeout(Duration::from_secs(30))
             .build();
         let retry_config = RetryConfig::standard().with_max_attempts(10);
+
+        let endpoint_url =
+            env::var("DYNAMO_ENDPOINT").unwrap_or_else(|_| "http://localhost:8000".to_string());
         let config = aws_config::defaults(aws_config::BehaviorVersion::latest())
             .test_credentials()
-            .endpoint_url("http://localhost:8000")
+            .endpoint_url(&endpoint_url)
             .timeout_config(timeout_config)
             .retry_config(retry_config)
             .load()

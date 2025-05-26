@@ -25,19 +25,19 @@ services:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
 
-  cassandra:
-    image: "cassandra:latest"
-    ports:
-      - "9042:9042"
-    environment:
-      - CASSANDRA_USER=user
-      - CASSANDRA_PASSWORD=password
-      - MAX_HEAP_SIZE=256M
-      - HEAP_NEWSIZE=128M
-    container_name: cassandra
-    restart: always
-    volumes:
-      - ./docker/cassandra:/var/lib/cassandra
+  # cassandra:
+  #   image: "cassandra:latest"
+  #   ports:
+  #     - "9042:9042"
+  #   environment:
+  #     - CASSANDRA_USER=user
+  #     - CASSANDRA_PASSWORD=password
+  #     - MAX_HEAP_SIZE=256M
+  #     - HEAP_NEWSIZE=128M
+  #   container_name: cassandra
+  #   restart: always
+  #   volumes:
+  #     - ./docker/cassandra:/var/lib/cassandra
 
   dynamodb:
     container_name: dynamodb
@@ -86,4 +86,19 @@ services:
       - sensor-consumer
     environment:
       - KAFKA_SERVER=kafka:9092
+    restart: unless-stopped
+
+  api:
+    ports:
+      - "5678:5678"
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    container_name: api
+    depends_on:
+      - sensor-consumer
+      - sensor-simulator
+      - dynamodb
+    environment:
+      - DYNAMO_ENDPOINT=http://dynamodb:8000
     restart: unless-stopped

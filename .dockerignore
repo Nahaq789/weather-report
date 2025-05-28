@@ -1,0 +1,133 @@
+
+# === Git関連 ===
+.git/
+.gitignore
+.gitattributes
+
+# === Docker関連 ===
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+.docker/
+
+# === Rust関連 ===
+# ビルド成果物
+target/
+**/target/
+**/*.rs.bk
+*.pdb
+
+# === Next.js/Node.js関連 ===
+# 依存関係
+node_modules/
+web/node_modules/
+**/node_modules/
+
+# Next.js ビルド成果物
+web/.next/
+web/out/
+**/.next/
+**/out/
+
+# Next.js キャッシュ
+web/.next/cache/
+**/.next/cache/
+
+# 環境ファイル
+web/.env*
+**/.env*
+.env
+.env.local
+.env.*.local
+
+# ログファイル
+web/npm-debug.log*
+web/yarn-debug.log*
+web/yarn-error.log*
+web/.pnpm-debug.log*
+**/*-debug.log*
+**/*-error.log*
+*.log
+
+# TypeScript
+web/*.tsbuildinfo
+web/next-env.d.ts
+**/*.tsbuildinfo
+**/next-env.d.ts
+
+# === エディタ・IDE関連 ===
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# === OS生成ファイル ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# === 一時ファイル ===
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# === ドキュメント・README ===
+README.md
+*.md
+docs/
+documentation/
+
+# === スクリプト（必要に応じて除外）===
+scripts/
+build.sh
+push.sh
+
+# === テスト関連 ===
+coverage/
+web/coverage/
+**/coverage/
+
+# === データベース・永続化データ ===
+docker/
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# === Terraform ===
+**/.terraform/
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+terraform.rc
+.terraformrc
+.terraform.lock.hcl
+
+# === その他の設定ファイル ===
+.eslintcache
+.stylelintcache
+
+# === パッケージファイル（プロダクションビルドに不要） ===
+web/yarn.lock
+web/pnpm-lock.yaml
+
+# === Vercel関連 ===
+web/.vercel/
+**/.vercel/
+
+# === 除外しない重要なファイル（明示的に含める） ===
+!Cargo.toml
+!Cargo.lock
+!web/package.json
+!web/package-lock.json
+!web/tsconfig.json
+!web/next.config.ts
+!web/tailwind.config.js
+!web/postcss.config.mjs

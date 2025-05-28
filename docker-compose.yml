@@ -105,3 +105,14 @@ services:
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_DEFAULT_REGION=us-east-1
     restart: unless-stopped
+
+  web:
+    ports:
+      - "3000:3000"
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: web
+    depends_on:
+      - api
+    restart: unless-stopped

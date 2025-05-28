@@ -25,16 +25,16 @@ pub mod sensor_dto;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    tracing_subscriber::fmt().with_ansi(false).json().init();
-    let listener = TcpListener::bind("127.0.0.1:5678").await?;
+    tracing_subscriber::fmt().with_ansi(false).init();
+    tracing::info!("server start!!!");
+
+    let listener = TcpListener::bind("0.0.0.0:5678").await?;
 
     let app = Router::new()
         .route("/sensor", any(sensor_handler))
         .route("/hoge", any(ws_hoge_handler));
 
     axum::serve(listener, app).await.unwrap();
-
-    println!("Hello, world!");
     Ok(())
 }
 
@@ -62,7 +62,13 @@ async fn handle_hoge(mut socket: WebSocket) {
 
 async fn handle_socket(mut socket: WebSocket) {
     println!("connection started");
-    let client = build_client().await.unwrap();
+    let client = match build_client().await {
+        Ok(c) => c,
+        Err(e) => {
+            tracing::error!("dynamodb client error: {:?}", e);
+            return;
+        }
+    };
     let repository = SensorRepositoryImpl::new(client);
 
     while let Some(msg) = socket.recv().await {
@@ -71,6 +77,11 @@ async fn handle_socket(mut socket: WebSocket) {
                 Message::Text(text) => loop {
                     tracing::info!("received message: {:?}", text);
                     let result = repository.get_sensor_data(&text).await.unwrap();
+
+                    if result.is_empty() {
+                        tracing::info!("the area data not fount: {}", text);
+                        return;
+                    }
 
                     let mut temperature_vec: Vec<f64> = Vec::new();
                     let mut humidity_vec: Vec<f64> = Vec::new();

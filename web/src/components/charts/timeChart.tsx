@@ -8,7 +8,13 @@ const Chart = dynamic(() => import("react-apexcharts"), {
   loading: () => <div>loading...</div>,
 });
 
+interface Series {
+  name: string;
+  data: number[];
+}
+
 interface TimeChartProps {
+  series: Series[];
   sensors: Sensor[];
 }
 
@@ -27,14 +33,8 @@ const timeLine = [
   "55秒",
   "60秒",
 ].reverse();
-const TimeChart = ({ sensors }: TimeChartProps) => {
+const TimeChart = ({ series, sensors }: TimeChartProps) => {
   const categories = timeLine.slice(timeLine.length - sensors.length, 14);
-  const series = [
-    {
-      name: "hoge",
-      data: sensors.map((sensor) => sensor.aggregate.temperature.avg),
-    },
-  ];
   const options: ApexOptions = {
     chart: {
       height: "100%",

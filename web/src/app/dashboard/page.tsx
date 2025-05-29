@@ -9,22 +9,30 @@ import Sidebar from "@/components/Sidebar";
 import React from "react";
 
 const DashboardLayout = () => {
-	return (
-		<div className="flex flex-col w-full h-screen bg-gray-50 text-gray-800 overflow-auto">
-			<Header />
-			<main className="flex-grow p-4 grid grid-cols-12 gap-4">
-				<Sidebar />
-				<div className="col-span-7 space-y-4">
-					<CurrentBoard />
-					<Measurements />
-				</div>
-				<div className="col-span-3 space-y-4">
-					<Alert />
-					<Status />
-				</div>
-			</main>
-		</div>
-	);
+  return (
+    <div className="flex flex-col w-full min-h-screen bg-gray-50 text-gray-800">
+      <Header />
+      <main className="flex-grow p-4">
+        <div className="grid grid-cols-12 gap-4 h-full">
+          <Sidebar />
+
+          <div className="col-span-7 flex flex-col space-y-4 overflow-y-auto min-h-0">
+            <div className="flex-shrink-0">
+              <CurrentBoard />
+            </div>
+            <div className="flex-grow min-h-0">
+              <Measurements />
+            </div>
+          </div>
+
+          <div className="col-span-3 flex flex-col space-y-4 h-fit sticky top-4 overflow-y-auto max-h-[calc(100vh-2rem)]">
+            <Alert />
+            <Status />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 };
 
 export default DashboardLayout;
